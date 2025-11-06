@@ -15,6 +15,15 @@ export async function loadSequelize() {
         })
 
         const User = sequelize.define("User",{
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: true
+            },
+            lastname: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
             username: {
                 type: DataTypes.STRING,
                 allowNull: false,
