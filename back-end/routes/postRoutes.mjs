@@ -50,6 +50,17 @@ router.put("/:id", async (req, res) => {
     }
 });
 
+router.patch("/:id",async (req,res) => {
+    try{
+        const post = await Post.findByPk(req.params.id);
+        if(!post) return res.status(404).json({error : "Post not found"});
+        await post.update(req.body);
+        res.json(post);
+    }catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 // ✅ DELETE post
 router.delete("/:id", async (req, res) => {
     try {

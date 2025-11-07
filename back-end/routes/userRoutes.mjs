@@ -45,6 +45,17 @@ router.put("/:id", async (req, res) => {
     }
 });
 
+router.patch("/:id",async (req,res) => {
+    try{
+        const user = await User.findByPk(req.params.id);
+        if(!user) return res.status(404).json({error : "User not found"});
+        await user.update(req.body);
+        res.json(user);
+    }catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 
 router.delete("/:id",async (req,res) => {
     try{

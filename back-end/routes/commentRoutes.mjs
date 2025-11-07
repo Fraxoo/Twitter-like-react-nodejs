@@ -25,6 +25,17 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.patch("/:id",async (req,res) => {
+    try{
+        const comment = await Comment.findByPk(req.params.id);
+        if(!comment) return res.status(404).json({error : "Comment not found"});
+        await comment.update(req.body);
+        res.json(comment);
+    }catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 // ✅ DELETE comment
 router.delete("/:id", async (req, res) => {
     try {
