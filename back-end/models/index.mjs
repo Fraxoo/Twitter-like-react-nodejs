@@ -9,7 +9,7 @@ import { Hashtag } from "./Hashtag.mjs";
 import { PostHashtag } from "./PostHashtag.mjs";
 
 // =============================
-// ✅ Déclaration des relations
+// Déclaration des relations
 // =============================
 
 // User → Post
@@ -54,7 +54,7 @@ Hashtag.belongsToMany(Post, {
 });
 
 // =============================
-// ✅ Export PRO
+// Export 
 // =============================
 export {
   sequelize,
