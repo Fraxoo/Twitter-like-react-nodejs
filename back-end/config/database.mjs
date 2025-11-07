@@ -1,49 +1,24 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+export const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT,
+    }
+);
 
 
-export async function loadSequelize() {
+export async function testDBConnection() {
     try{
-        const login = {
-            databse: "app-database",
-            username: "root",
-            password: "root"
-        }
-
-        const sequelize = new Sequelize(login.databse,login.username,login.password,{
-            host: '127.0.0.1',
-            dialect: 'mysql'
-        })
-
-        const User = sequelize.define("User",{
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true
-            },
-            lastname: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            username: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true
-            },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true
-            },
-            password: {
-                type: DataTypes.STRING,
-                allowNull: false
-            }
-        })
-
-
-        return sequelize;
+        await sequelize.authenticate();
+        console.log("Connexion ok");
     } catch (error){
-        console.log(error);
-        
+        console.error(`Erreur DB : ${error}`)
     }
 }
