@@ -1,10 +1,18 @@
-header{
-    display: flex;
-    flex-direction: column;
-}
+
 
 header a{
     text-decoration: none;
+}
+
+header img {
+    width: 2rem;
+}
+
+.header-content{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
 .header-list{
