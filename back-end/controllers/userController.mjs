@@ -24,9 +24,37 @@ export async function getUserById(req, res) {
 // POST create user
 export async function createUser(req, res) {
   try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
+    const { name, lastname, username, email, password } = req.body;
+
+    if (!name, !lastname, !lastname, !username, !email, !password) {
+      res.status(400).json({ error: "Tout les champs doivent etre remplis" });
+    }
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      res.status(400).json({
+        error: { field: "email", message: "Email Déja utilisé" }
+      });
+    }
+
+    const existingUsername = await User.findOne({ where: { username } });
+    if (existingUsername) {
+      res.status(400).json({
+        error: { field: "username", message: "Pseudo déja utilisé" }
+      });
+    }
+
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+
   } catch (err) {
+    if (err.name === "SequelizeValidationError") {
+      const errors = err.errors.map(e => ({
+        field: e.path,
+        message: e.message
+      }));
+      return res.status(400).json({ errors });
+    }
     res.status(500).json({ error: err.message });
   }
 }
