@@ -1,35 +1,12 @@
 import express from "express";
-import { Like } from "../models/index.mjs";
+import { createLike, deleteLike } from "../controllers/likeController.mjs";
 
 const router = express.Router();
 
-// ✅ LIKE a post
-router.post("/", async (req, res) => {
-    try {
-        // req.body doit contenir : user_id, post_id
-        const like = await Like.create(req.body);
-        res.json(like);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Ajouter un like
+router.post("/", createLike);
 
-// ✅ UNLIKE a post
-router.delete("/", async (req, res) => {
-    try {
-        const { user_id, post_id } = req.body;
-
-        const like = await Like.findOne({
-            where: { user_id, post_id }
-        });
-
-        if (!like) return res.status(404).json({ error: "Like not found" });
-
-        await like.destroy();
-        res.json({ message: "Like removed" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Supprimer un like
+router.delete("/", deleteLike);
 
 export default router;

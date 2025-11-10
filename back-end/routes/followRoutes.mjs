@@ -1,35 +1,23 @@
 import express from "express";
-import { Follow } from "../models/index.mjs";
+import {
+  createFollow,
+  deleteFollow,
+  getFollowers,
+  getFollowing
+} from "../controllers/followController.mjs";
 
 const router = express.Router();
 
-// ✅ FOLLOW someone
-router.post("/", async (req, res) => {
-    try {
-        // req.body must contain : follower_id, followed_id
-        const follow = await Follow.create(req.body);
-        res.json(follow);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Créer une relation (follow)
+router.post("/", createFollow);
 
-// ✅ UNFOLLOW someone
-router.delete("/", async (req, res) => {
-    try {
-        const { follower_id, followed_id } = req.body;
+// Supprimer une relation (unfollow)
+router.delete("/", deleteFollow);
 
-        const follow = await Follow.findOne({
-            where: { follower_id, followed_id }
-        });
+// Récupérer tous les followers d'un user
+router.get("/:userId/followers", getFollowers);
 
-        if (!follow) return res.status(404).json({ error: "Follow relation not found" });
-
-        await follow.destroy();
-        res.json({ message: "Unfollowed successfully" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Récupérer tous les comptes suivis par un user
+router.get("/:userId/following", getFollowing);
 
 export default router;

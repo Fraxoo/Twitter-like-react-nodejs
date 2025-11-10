@@ -1,53 +1,35 @@
 import express from "express";
-import { Comment } from "../models/index.mjs";
+import {
+  getComments,
+  getCommentById,
+  createComment,
+  updateComment,
+  patchComment,
+  deleteComment,
+  getCommentsByPostId
+} from "../controllers/commentController.mjs";
 
 const router = express.Router();
 
-// ✅ GET all comments for a specific post
-router.get("/post/:postId", async (req, res) => {
-    try {
-        const comments = await Comment.findAll({
-            where: { post_id: req.params.postId }
-        });
-        res.json(comments);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Récupérer tous les commentaires
+router.get("/", getComments);
 
-// ✅ POST create comment
-router.post("/", async (req, res) => {
-    try {
-        const comment = await Comment.create(req.body);
-        res.json(comment);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Récupérer les commentaires d’un post spécifique
+router.get("/post/:postId", getCommentsByPostId);
 
-router.patch("/:id",async (req,res) => {
-    try{
-        const comment = await Comment.findByPk(req.params.id);
-        if(!comment) return res.status(404).json({error : "Comment not found"});
-        await comment.update(req.body);
-        res.json(comment);
-    }catch (err) {
-        res.status(500).json({ error: err.message })
-    }
-})
+// Récupérer un commentaire par son ID
+router.get("/:id", getCommentById);
 
-// ✅ DELETE comment
-router.delete("/:id", async (req, res) => {
-    try {
-        const comment = await Comment.findByPk(req.params.id);
+// Créer un commentaire
+router.post("/", createComment);
 
-        if (!comment) return res.status(404).json({ error: "Comment not found" });
+// Modifier complètement un commentaire
+router.put("/:id", updateComment);
 
-        await comment.destroy();
-        res.json({ message: "Comment deleted" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Modifier partiellement un commentaire
+router.patch("/:id", patchComment);
+
+// Supprimer un commentaire
+router.delete("/:id", deleteComment);
 
 export default router;

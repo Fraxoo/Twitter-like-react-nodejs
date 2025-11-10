@@ -1,78 +1,21 @@
 import express from "express";
-import { Post } from "../models/index.mjs";
+import {
+  getPosts,
+  getPostById,
+  createPost,
+  updatePost,
+  patchPost,
+  deletePost,
+} from "../controllers/postController.mjs";
 
 const router = express.Router();
 
-// ✅ GET all posts
-router.get("/", async (req, res) => {
-    try {
-        const posts = await Post.findAll();
-        res.json(posts);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// ✅ GET post by ID
-router.get("/:id", async (req, res) => {
-    try {
-        const post = await Post.findByPk(req.params.id);
-
-        if (!post) return res.status(404).json({ error: "Post not found" });
-
-        res.json(post);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// ✅ POST create post
-router.post("/", async (req, res) => {
-    try {
-        const post = await Post.create(req.body);
-        res.json(post);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// ✅ PUT update post
-router.put("/:id", async (req, res) => {
-    try {
-        const post = await Post.findByPk(req.params.id);
-
-        if (!post) return res.status(404).json({ error: "Post not found" });
-
-        await post.update(req.body);
-        res.json(post);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-router.patch("/:id",async (req,res) => {
-    try{
-        const post = await Post.findByPk(req.params.id);
-        if(!post) return res.status(404).json({error : "Post not found"});
-        await post.update(req.body);
-        res.json(post);
-    }catch (err) {
-        res.status(500).json({ error: err.message })
-    }
-})
-
-// ✅ DELETE post
-router.delete("/:id", async (req, res) => {
-    try {
-        const post = await Post.findByPk(req.params.id);
-
-        if (!post) return res.status(404).json({ error: "Post not found" });
-
-        await post.destroy();
-        res.json({ message: "Post deleted" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Routes REST pour les posts
+router.get("/", getPosts);
+router.get("/:id", getPostById);
+router.post("/", createPost);
+router.put("/:id", updatePost);
+router.patch("/:id", patchPost);
+router.delete("/:id", deletePost);
 
 export default router;
