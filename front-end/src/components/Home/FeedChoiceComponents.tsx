@@ -1,12 +1,16 @@
 
 
-export default function FeedChoice(){
+export default function FeedChoice() {
 
-    
-    return(
+
+    return (
         <div className="home-feed-choice">
-            <p>Pour vous</p>
-            <p>Abonnements</p>
+            <div>
+                <p>Pour vous</p>
+            </div>
+            <div>
+                <p>Abonnements</p>
+            </div>
         </div>
     )
 }

@@ -14,12 +14,13 @@ export default function Home() {
         <div className="content">
             <Header />
             <main>
-                <div className="main-content">
-                    <FeedChoice />
-                    <Feed />
-                </div>
-                <Loading />
+                <FeedChoice />
+                <Feed />
             </main>
+            <div className="filter">
+                <Loading />
+
+            </div>
         </div>
     )
 }

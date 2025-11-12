@@ -1,0 +1,131 @@
+/* ===============================
+   RESET & BASE
+==================================*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0b0b0c;            /* Couleur de fond principale */
+  --fg: #e7e7ea;            /* Texte principal */
+  --muted: #a5a7b0;         /* Texte secondaire */
+  --accent: #6ea8fe;        /* Couleur accent (focus) */
+  --ring: rgba(110, 168, 254, 0.35);
+  --border: #2a2d33;
+  --error: #ff6b6b;
+  --font: "Inter", system-ui, sans-serif;
+}
+
+/* ===============================
+   LAYOUT
+==================================*/
+
+.register{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.auth h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: var(--accent);
+}
+
+.auth form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+/* ===============================
+   INPUT + LABEL (FLOATING LABEL)
+==================================*/
+.form {
+  position: relative;
+  width: 100%;
+}
+
+.form_input {
+  width: 100%;
+  padding: 14px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  outline: none;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* État focus */
+.form_input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 5px var(--ring);
+}
+
+/* Label flottant */
+.form_label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 14px;
+  padding: 0 6px;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+/* Quand focus ou non vide */
+.form_input:focus + .form_label,
+.form_input:not(:placeholder-shown) + .form_label {
+  top: 0;
+  transform: translateY(-60%) scale(0.92);
+  color: var(--accent);
+  font-size: 12px;
+}
+
+/* ===============================
+   ERREURS
+==================================*/
+.error {
+  color: var(--error);
+  font-size: 13px;
+  margin-top: -10px;
+  padding-left: 4px;
+}
+
+.form_input.error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.2);
+}
+
+
+.auth button{
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 1rem;
+    padding: 0.7rem 0;
+    font-size: 1rem;
+    cursor: pointer;
+}

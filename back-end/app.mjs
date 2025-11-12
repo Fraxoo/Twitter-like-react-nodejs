@@ -7,6 +7,7 @@ import commentRoutes from "./routes/commentRoutes.mjs";
 import likeRoutes from "./routes/likeRoutes.mjs";
 import followRoutes from "./routes/followRoutes.mjs";
 import hashtagRoutes from "./routes/hashtagRoutes.mjs";
+import cors from "cors";
 
 import { sequelize, testDBConnection } from "./config/database.mjs";
 
@@ -14,6 +15,12 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(cors({
+    origin: "http://localhost:5173", // a mettre pour pouvoir communiquer en local
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 
 
 app.use("/users", userRoutes);
