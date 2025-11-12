@@ -1,6 +1,15 @@
 // controllers/usersController.mjs
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { User } from "../models/index.mjs";
+import dotenv from "dotenv"
+import cookieParser from "cookie-parser";
+
+dotenv.config();
+
+const JWT_SECRET = process.env.PRIVATE_JWT_KEY;
+
+
 
 const sendErrors = (res, errors, status = 400) => {
   // errors: array of { field, message }
@@ -43,7 +52,7 @@ export async function createUser(req, res) {
         400
       );
     }
-    
+
     // Doublon username
     const existingUsername = await User.findOne({ where: { username } });
     if (existingUsername) {
@@ -95,6 +104,46 @@ export async function createUser(req, res) {
     return sendErrors(res, [{ field: "global", message: err.message }], 500);
   }
 }
+
+// POST login
+export async function login(req, res) {
+  const { email, password } = req.body;
+
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "L'email et le mot de passe sont requis." });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    const passwordValid = await bcrypt.compare(password, user.password);
+
+    if (!user || !passwordValid) {
+      return res.status(401).json({ message: "Email ou mot de passe incorrect." });
+    }
+
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
+
+    res.cookie("token", token, {
+      httpOnly: true,    // empêche l'accès au cookie depuis JS
+      secure: false,     // mets true en production (HTTPS)
+      maxAge: 3600000,   // 1h en millisecondes
+    });
+
+    res.json({
+      message: "Connexion réussie !",
+      user: { id: user.id, email: user.email, name: user.name },
+    });
+
+  } catch (error) {
+    console.error("Erreur de connexion :", error);
+    res.status(500).json({
+      message: "Erreur lors de la tentative de connexion.",
+      error: error.message,
+    });
+  }
+}
+
 
 // PUT (full update)
 export async function updateUser(req, res) {

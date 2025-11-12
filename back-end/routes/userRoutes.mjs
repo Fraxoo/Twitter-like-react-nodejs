@@ -3,6 +3,7 @@ import {
   getUsers,
   getUserById,
   createUser,
+  login,
   updateUser,
   patchUser,
   deleteUser,
@@ -13,7 +14,8 @@ const router = express.Router();
 // Routes REST
 router.get("/", getUsers);
 router.get("/:id", getUserById);
-router.post("/", createUser);
+router.post("/register", createUser);
+router.post("/login",login)
 router.put("/:id", updateUser);
 router.patch("/:id", patchUser);
 router.delete("/:id", deleteUser);

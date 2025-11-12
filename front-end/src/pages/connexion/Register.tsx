@@ -28,11 +28,8 @@ export default function Register() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        // on vide les anciennes erreurs
         setErrors({});
 
-        // Vérifie la confirmation du mot de passe côté client
         if (confirmPassword !== formData.password) {
             setErrors({
                 confirmPassword: "Les mots de passe ne correspondent pas.",
