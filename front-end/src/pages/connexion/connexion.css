@@ -13,8 +13,8 @@
   --bg: #0b0b0c;            /* Couleur de fond principale */
   --fg: #e7e7ea;            /* Texte principal */
   --muted: #a5a7b0;         /* Texte secondaire */
-  --accent: #6ea8fe;        /* Couleur accent (focus) */
-  --ring: rgba(110, 168, 254, 0.35);
+  --accent: #ffffff;        /* Couleur accent (focus) */
+  --ring: rgba(142, 143, 145, 0.35);
   --border: #2a2d33;
   --error: #ff6b6b;
   --font: "Inter", system-ui, sans-serif;
@@ -78,7 +78,7 @@
 /* État focus */
 .form_input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 5px var(--ring);
+  box-shadow: 0 0 0 3px var(--ring);
 }
 
 /* Label flottant */
@@ -128,4 +128,16 @@
     padding: 0.7rem 0;
     font-size: 1rem;
     cursor: pointer;
+}
+
+
+.swal-dark-popup {
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(110, 168, 254, 0.2);
+  padding: 25px 20px;
+}
+
+.swal-dark-title {
+  color: #6ea8fe !important;
+  font-size: 1.6rem;
 }

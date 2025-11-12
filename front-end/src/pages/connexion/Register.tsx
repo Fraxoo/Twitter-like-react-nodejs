@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import "./connexion.css";
+import Swal from "sweetalert2";
+import Loading from "../../components/global/LoadingComponents"
+import ReactDOM from "react-dom/client";
+
 
 export default function Register() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: "",
         lastname: "",
@@ -63,7 +69,40 @@ export default function Register() {
             // Si tout est OK : succès
             setErrors({});
             console.log("Inscription réussie !");
-            alert("Inscription réussie !");
+            // ton composant
+
+            Swal.fire({
+                title: "Inscription réussie !",
+                html: `
+    <p style="color:#fff;margin-top:6px;">
+      Vous allez être redirigé vers la page de connexion.
+    </p>
+    <div id="custom-loader" style="margin-top:16px;"></div>
+  `,
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false,
+                background: "#0b0b0c",
+                color: "#ffffff",
+                iconColor: "#6ea8fe",
+                backdrop: "rgba(0,0,0,0.6)",
+                customClass: {
+                    popup: "swal-dark-popup",
+                    title: "swal-dark-title",
+                },
+                didOpen: () => {
+                    const container = document.getElementById("custom-loader");
+                    if (container) {
+                        const root = ReactDOM.createRoot(container);
+                        root.render(<Loading />);
+                    }
+                },
+            }).then(() => {
+                navigate("/login");
+            });
+
+
+
         } catch (err) {
             setErrors({
                 global: "Erreur de connexion au serveur.",
