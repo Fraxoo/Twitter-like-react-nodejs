@@ -1,112 +1,67 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import "./connexion.css";
-import Swal from "sweetalert2";
-import Loading from "../../components/global/LoadingComponents"
-import ReactDOM from "react-dom/client";
+import { useState } from "react";
 
 
 export default function Register() {
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: "",
         lastname: "",
         username: "",
         email: "",
         password: "",
+        confirmPassword: ""
     });
 
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+    const [success,setSuccess] = useState("")
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
+            ...formData, [e.target.name]: e.target.value
+        })
+        console.log(formData);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    }
+
+    const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setErrors({});
-
-        if (confirmPassword !== formData.password) {
-            setErrors({
-                confirmPassword: "Les mots de passe ne correspondent pas.",
-            });
-            return;
-        }
-
         try {
-            const response = await fetch("http://localhost:8000/users", {
+            const res = await fetch("http://localhost:8000/users/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(formData)
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
-            // Si le backend renvoie une erreur
-            if (!response.ok) {
-                if (data.errors && Array.isArray(data.errors)) {
-                    // Convertit le tableau [{ field, message }] en objet { field: message }
-                    const fieldErrors: { [key: string]: string } = {};
-                    data.errors.forEach((err: any) => {
-                        fieldErrors[err.field] = err.message;
-                    });
-                    setErrors(fieldErrors);
-                } else {
-                    setErrors({
-                        global: "Une erreur inconnue est survenue.",
-                    });
-                }
+            if (!res.ok) {
+                const formattedErrors: Record<string, string> = {}; //permet de faire { string : "" , string: ""}
+                data.errors.forEach((err: any) => {
+                    formattedErrors[err.field] = err.message
+                })
+                setErrors(formattedErrors)
+                setSuccess("");
                 return;
             }
-
-            // Si tout est OK : succès
+            console.log("inscription réussi");
+            setSuccess("Inscription réussi!");
+            setTimeout(() => {
+                navigate("/login")
+            },1000)
             setErrors({});
-            console.log("Inscription réussie !");
-            // ton composant
-
-            Swal.fire({
-                title: "Inscription réussie !",
-                html: `
-    <p style="color:#fff;margin-top:6px;">
-      Vous allez être redirigé vers la page de connexion.
-    </p>
-    <div id="custom-loader" style="margin-top:16px;"></div>
-  `,
-                icon: "success",
-                timer: 2000,
-                showConfirmButton: false,
-                background: "#0b0b0c",
-                color: "#ffffff",
-                iconColor: "#6ea8fe",
-                backdrop: "rgba(0,0,0,0.6)",
-                customClass: {
-                    popup: "swal-dark-popup",
-                    title: "swal-dark-title",
-                },
-                didOpen: () => {
-                    const container = document.getElementById("custom-loader");
-                    if (container) {
-                        const root = ReactDOM.createRoot(container);
-                        root.render(<Loading />);
-                    }
-                },
-            }).then(() => {
-                navigate("/login");
-            });
-
-
-
+            
         } catch (err) {
+            console.log(err);
+            
             setErrors({
-                global: "Erreur de connexion au serveur.",
-            });
+                global: "Erreur de connexion au serveur"
+            })
         }
-    };
-
+    }
 
 
     return (
@@ -189,23 +144,24 @@ export default function Register() {
                         <label htmlFor="password" className="form_label">Mot de passe</label>
                     </div>
 
-                    {errors.password && <p className="error" >{errors.password}</p>}
+                    {/* {errors.password && <p className="error" >{errors.password}</p>} */}
 
                     <div className="form">
                         <input
                             type="password"
-                            name="confirm-password"
-                            id="confirm-password"
+                            name="confirmPassword"
+                            id="confirmPassword"
                             className="form_input"
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onChange={handleChange}
                             placeholder=" "
                             autoComplete="new-password"
                         />
-                        <label htmlFor="confirm-password" className="form_label">Confirmer</label>
+                        <label htmlFor="confirmPassword" className="form_label">Confirmer</label>
                     </div>
 
                     {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
                     {errors.global && <p className="error">{errors.global}</p>}
+                    {success && <p className="success">{success}</p>}
 
                     <button>S'inscrire</button>
                 </form>

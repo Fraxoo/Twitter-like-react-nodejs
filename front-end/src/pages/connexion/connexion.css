@@ -10,10 +10,14 @@
 }
 
 :root {
-  --bg: #0b0b0c;            /* Couleur de fond principale */
-  --fg: #e7e7ea;            /* Texte principal */
-  --muted: #a5a7b0;         /* Texte secondaire */
-  --accent: #ffffff;        /* Couleur accent (focus) */
+  --bg: #0b0b0c;
+  /* Couleur de fond principale */
+  --fg: #e7e7ea;
+  /* Texte principal */
+  --muted: #a5a7b0;
+  /* Texte secondaire */
+  --accent: #ffffff;
+  /* Couleur accent (focus) */
   --ring: rgba(142, 143, 145, 0.35);
   --border: #2a2d33;
   --error: #ff6b6b;
@@ -24,12 +28,12 @@
    LAYOUT
 ==================================*/
 
-.register{
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.register {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .auth {
@@ -96,8 +100,8 @@
 }
 
 /* Quand focus ou non vide */
-.form_input:focus + .form_label,
-.form_input:not(:placeholder-shown) + .form_label {
+.form_input:focus+.form_label,
+.form_input:not(:placeholder-shown)+.form_label {
   top: 0;
   transform: translateY(-60%) scale(0.92);
   color: var(--accent);
@@ -105,8 +109,16 @@
 }
 
 /* ===============================
-   ERREURS
+   ERREURS / SUCCESS
 ==================================*/
+
+.success {
+  color: rgb(0, 185, 0);
+  font-size: 13px;
+  margin-top: -10px;
+  padding-left: 4px;
+}
+
 .error {
   color: var(--error);
   font-size: 13px;
@@ -120,14 +132,14 @@
 }
 
 
-.auth button{
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 1rem;
-    padding: 0.7rem 0;
-    font-size: 1rem;
-    cursor: pointer;
+.auth button {
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.7rem 0;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 
