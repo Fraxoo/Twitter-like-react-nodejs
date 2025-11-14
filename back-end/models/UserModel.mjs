@@ -48,6 +48,6 @@ export const User = sequelize.define("User", {
     following_count: { type: DataTypes.INTEGER, defaultValue: 0 }
 }, {
     tableName: "users",
-    timestamps: false 
+    timestamps: true
 });
 
