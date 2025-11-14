@@ -16,7 +16,7 @@ export default function Register() {
     });
 
     const [errors, setErrors] = useState<{ [key: string]: string }>({})
-    const [success,setSuccess] = useState("")
+    const [success, setSuccess] = useState("")
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +27,7 @@ export default function Register() {
 
     }
 
-    const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const res = await fetch("http://localhost:8000/users/register", {
@@ -51,12 +51,12 @@ export default function Register() {
             setSuccess("Inscription réussi!");
             setTimeout(() => {
                 navigate("/login")
-            },1000)
+            }, 1000)
             setErrors({});
-            
+
         } catch (err) {
             console.log(err);
-            
+
             setErrors({
                 global: "Erreur de connexion au serveur"
             })
@@ -144,7 +144,7 @@ export default function Register() {
                         <label htmlFor="password" className="form_label">Mot de passe</label>
                     </div>
 
-                    {/* {errors.password && <p className="error" >{errors.password}</p>} */}
+                    {errors.password && <p className="error" >{errors.password}</p>}
 
                     <div className="form">
                         <input
