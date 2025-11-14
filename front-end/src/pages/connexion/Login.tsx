@@ -1,17 +1,40 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import "./connexion.css"
 
 
 export default function Login() {
 
-    const [formData,setFormData] = useState("");
+    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+    const [formData, setFormData] = useState({
 
-    async function handleChange(e:React.ChangeEvent<HTMLInputElement>) {
-        
+    });
+
+    async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setFormData({
+            ...formData, [e.target.name]: e.target.value,
+        })
     }
 
-    async function handleSubmit(e:React.FormEvent<HTMLFormElement>) {
-        
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        try {
+            const res = await fetch("http://localhost:8000/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+
+            if (!res.ok) {
+
+            }
+
+
+        } catch (err) {
+            setErrors({
+                global: "Erreur serveur"
+            })
+        }
     }
 
     return (
@@ -21,7 +44,7 @@ export default function Login() {
 
                 <form onSubmit={handleSubmit}>
 
-                    
+
                     <div className="form">
                         <input
                             type="email"
@@ -51,11 +74,9 @@ export default function Login() {
                     </div>
 
                     {errors.password && <p className="error" >{errors.password}</p>}
-
-
                     {errors.global && <p className="error">{errors.global}</p>}
 
-                    <button>S'inscrire</button>
+                    <button>Se connecter</button>
                 </form>
             </div>
 

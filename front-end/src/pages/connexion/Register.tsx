@@ -47,6 +47,7 @@ export default function Register() {
                 setSuccess("");
                 return;
             }
+            
             console.log("inscription réussi");
             setSuccess("Inscription réussi!");
             setTimeout(() => {
@@ -56,7 +57,6 @@ export default function Register() {
 
         } catch (err) {
             console.log(err);
-
             setErrors({
                 global: "Erreur de connexion au serveur"
             })
