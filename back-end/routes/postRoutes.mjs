@@ -1,21 +1,25 @@
-import express from "express";
+import { isLoggedInJWT } from "../middleware/IsLoggedInJWT.mjs";
+import express from "express"
+import { User } from "../models/index.mjs";
+
 import {
-  getPosts,
-  getPostById,
-  createPost,
-  updatePost,
-  patchPost,
-  deletePost,
+    getAllPost,
+    getPostByID,
+    createPost,
+    updatePost,
+    deletePost
 } from "../controllers/postController.mjs";
 
-const router = express.Router();
+const routeur = express.Router();
 
-// Routes REST pour les posts
-router.get("/", getPosts);
-router.get("/:id", getPostById);
-router.post("/", createPost);
-router.put("/:id", updatePost);
-router.patch("/:id", patchPost);
-router.delete("/:id", deletePost);
+routeur.get("/get/", getAllPost);
+routeur.get("/get/:id", getPostByID);
 
-export default router;
+
+//secure path
+routeur.post("/create",isLoggedInJWT(User), createPost);
+routeur.put("/update/:id", isLoggedInJWT(User),updatePost);
+routeur.delete("/delete/:id",isLoggedInJWT(User),deletePost);
+
+
+export default routeur

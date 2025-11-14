@@ -1,7 +1,9 @@
 import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+import dotenv from "dotenv"
 
 dotenv.config();
+
+
 
 export const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -9,16 +11,15 @@ export const sequelize = new Sequelize(
     process.env.DB_PASS,
     {
         host: process.env.DB_HOST,
-        dialect: process.env.DB_DIALECT,
+        dialect: process.env.DB_DIALECT
     }
 );
-
 
 export async function testDBConnection() {
     try{
         await sequelize.authenticate();
-        console.log("Connexion ok");
-    } catch (error){
-        console.error(`Erreur DB : ${error}`)
+        console.log("Connected");
+    } catch (err){
+        console.error(`Erreur DB : ${err}`)
     }
 }

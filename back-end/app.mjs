@@ -1,24 +1,18 @@
-import express from "express";
-import dotenv from "dotenv";
-
-import userRoutes from "./routes/userRoutes.mjs";
-import postRoutes from "./routes/postRoutes.mjs";
-import commentRoutes from "./routes/commentRoutes.mjs";
-import likeRoutes from "./routes/likeRoutes.mjs";
-import followRoutes from "./routes/followRoutes.mjs";
-import hashtagRoutes from "./routes/hashtagRoutes.mjs";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
-
+import dotenv from "dotenv";
+import express from "express";
 import { sequelize, testDBConnection } from "./config/database.mjs";
+import userRoutes from "./routes/userRoutes.mjs"
+import postRoutes from "./routes/postRoutes.mjs"
+
 
 dotenv.config();
 
 const app = express();
+
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(cors({
     origin: "http://localhost:5173", // a mettre pour pouvoir communiquer en local
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -26,24 +20,22 @@ app.use(cors({
 }));
 
 
-app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
-app.use("/comments", commentRoutes);
-app.use("/likes", likeRoutes);
-app.use("/follow", followRoutes);
-app.use("/hashtags", hashtagRoutes);
+app.use("/users",userRoutes);
+app.use("/post",postRoutes)
 
 
 async function main() {
-    try {
+    try{
         await testDBConnection();
-        await sequelize.sync();
+        // await sequelize.sync({force: true});
+        await sequelize.sync({alter: true});
 
-        app.listen(process.env.PORT, () => {
-            console.log(`Serveur lancé sur localhost:${process.env.PORT}`);
-        });
+        app.listen(process.env.PORT,() => {
+            console.log(`Serveur lancé sur le port : ${process.env.PORT}`);
+            
+        })
     } catch (err) {
-        console.error(err);
+        console.error(err)
     }
 };
 

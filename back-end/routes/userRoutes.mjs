@@ -1,23 +1,27 @@
-import express from "express";
+import express from "express"
+import { User } from "../models/index.mjs";
+
 import {
-  getUsers,
-  getUserById,
-  createUser,
-  login,
-  updateUser,
-  patchUser,
-  deleteUser,
+    getUsers,
+    getUserByID,
+    register,
+    login,
+    updateUser,
+    deleteUser
 } from "../controllers/userController.mjs";
+import { isLoggedInJWT } from "../middleware/IsLoggedInJWT.mjs";
 
-const router = express.Router();
+const routeur = express.Router();
 
-// Routes REST
-router.get("/", getUsers);
-router.get("/:id", getUserById);
-router.post("/register", createUser);
-router.post("/login",login)
-router.put("/:id", updateUser);
-router.patch("/:id", patchUser);
-router.delete("/:id", deleteUser);
+routeur.get("/",getUsers)
+routeur.get("/:id",getUserByID);
+routeur.post("/register",register);
+routeur.post("/login",login);
 
-export default router;
+
+//SECURE PATH
+routeur.put("/update",isLoggedInJWT(User),updateUser);
+routeur.delete("/delete",isLoggedInJWT(User,deleteUser));
+
+
+export default routeur;

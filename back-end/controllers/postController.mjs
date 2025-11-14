@@ -1,71 +1,123 @@
-import { Post } from "../models/index.mjs";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { Post } from "../models/PostModel.mjs";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 
-// GET all posts
-export async function getPosts(req, res) {
-  try {
-    const posts = await Post.findAll();
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+dotenv.config();
+
+const JWT_SECRET = process.env.PRIVATE_JWT_KEY;
+
+const sendErrors = (res, errors, status = 400) => {
+    return res.status(status).json({ errors });
+};
+
+function catchError(res, err) {
+    if (err.name === "SequelizeValidationError") {
+        const errors = err.errors.map((e) => ({
+            field: e.path,
+            message: e.message,
+        }));
+        return sendErrors(res, errors, 400);
+    }
+    return sendErrors(res, [{ field: "global", message: err.message }], 500);
 }
 
-// GET post by ID
-export async function getPostById(req, res) {
-  try {
-    const post = await Post.findByPk(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    res.json(post);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+
+
+
+export async function getAllPost(req, res) {
+    try {
+        const posts = await Post.findAll();
+        if (!posts) {
+            sendErrors(res, [{ field: "global", msg: "Aucun post pour le moment" }],404)
+        }
+        return res.status(201).json(posts);
+    } catch (err) {
+        return catchError(res, err)
+    }
 }
 
-// POST create new post
+export async function getPostByID(req, res) {
+    try {
+        const { id } = req.body;
+        const post = await Post.findByPk(id);
+
+        if (!post) {
+            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable" }],404);
+        }
+
+        return res.status(201).json(post);
+    } catch (err) {
+        return catchError(res, err)
+    }
+}
+
 export async function createPost(req, res) {
-  try {
-    const post = await Post.create(req.body);
-    res.status(201).json(post);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const { content, image_url } = req.body;
+
+        if (!content || content.trim() === "") {
+            return sendErrors(res, [{ field: "content", message: "Contenu requis" }],400);
+        }
+
+
+        const newPost = await Post.create({
+            content: content.trim(),
+            image_url: image_url || null
+        });
+        return res.status(201).json(newPost)
+    } catch (err) {
+        return catchError(res, err);
+    }
 }
 
-// PUT (full update)
 export async function updatePost(req, res) {
-  try {
-    const post = await Post.findByPk(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
+    try {
+        const { id, content, image_url } = req.body;
 
-    await post.update(req.body);
-    res.json(post);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        if (!content || content.trim() === "") {
+            return sendErrors(res, [{ field: "content", message: "Contenu requis" }],400);
+        }
+
+        const post = await Post.findByPk(id);
+
+        if (!post) {
+            return sendErrors(res, [{ field: "global", message: "Post introuvable" }],404);
+        }
+
+        await post.update(
+            {
+                content: content.trim(),
+                image_url: image_url || null
+            },
+            {
+                where: { id }
+            })
+
+        return res.status(200).json({ message: "Post mis a jour avec succès." })
+    } catch (err) {
+        return catchError(res, err)
+    }
 }
 
-// PATCH (partial update)
-export async function patchPost(req, res) {
-  try {
-    const post = await Post.findByPk(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-
-    await post.update(req.body);
-    res.json(post);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-// DELETE post
 export async function deletePost(req, res) {
-  try {
-    const post = await Post.findByPk(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
+    try {
+        const { id } = req.body;
 
-    await post.destroy();
-    res.json({ message: "Post deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        if (!id) {
+            return sendErrors(res, [{ field: "global", message: "Identifiant du post manquant." }], 400);
+        }
+
+        const post = await Post.findByPk(id);
+        if (!post) {
+            return sendErrors(res, [{ field: "global", message: "Post introuvable." }], 404);
+        }
+
+        await post.destroy();
+
+        return res.status(200).json({ message: "Post supprimé avec succès." });
+    } catch (err) {
+        return catchError(res, err);
+    }
 }
