@@ -1,10 +1,14 @@
 import { useState } from "react";
 import "./connexion.css"
+import { useNavigate } from "react-router";
 
 
 export default function Login() {
 
-    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+    const navigate = useNavigate();
+
+    const [success, setSuccess] = useState("");
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [formData, setFormData] = useState({
 
     });
@@ -25,10 +29,24 @@ export default function Login() {
                 body: JSON.stringify(formData)
             });
 
-            if (!res.ok) {
+            const data = await res.json();
 
+            if (!res.ok) {
+                const formattedErrors: Record<string, string> = {}
+                data.errors.forEach((err: any) => {
+                    formattedErrors[err.field], err.message
+                })
+                setErrors(formattedErrors);
+                setSuccess("");
+                return;
             }
 
+            console.log("Connexion réussi");
+            setSuccess("Connexion réussi!");
+            setTimeout(() => {
+                navigate("/home")
+            }, 1000)
+            setErrors({});
 
         } catch (err) {
             setErrors({
@@ -75,6 +93,7 @@ export default function Login() {
 
                     {errors.password && <p className="error" >{errors.password}</p>}
                     {errors.global && <p className="error">{errors.global}</p>}
+                    {success && <p className="success">{success}</p>}
 
                     <button>Se connecter</button>
                 </form>
