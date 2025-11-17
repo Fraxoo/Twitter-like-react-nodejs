@@ -20,8 +20,12 @@ routeur.post("/login",login);
 
 
 //SECURE PATH
-routeur.put("/update",isLoggedInJWT(User),updateUser);
-routeur.delete("/delete",isLoggedInJWT(User,deleteUser));
+routeur.put("/update",isLoggedInJWT(),updateUser);
+routeur.delete("/delete",isLoggedInJWT(),deleteUser);
+routeur.get("/me", isLoggedInJWT(), (req, res) => {
+    res.json(req.user);
+});
+
 
 
 export default routeur;

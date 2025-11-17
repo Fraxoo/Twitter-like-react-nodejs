@@ -23,6 +23,24 @@ function catchError(res, err) {
     return sendErrors(res, [{ field: "global", message: err.message }], 500);
 }
 
+
+
+
+export async function getProfil(req, res) {
+    try {
+        if (!req.user) {
+            return res.status(401).json({
+                message: "Veuillez vous connecter."
+            });
+        }
+
+        return res.json(req.user);
+
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
+
 export async function getUsers(req, res) {
     try {
         const users = await User.findAll();
@@ -46,6 +64,8 @@ export async function getUserByID(req, res) {
 
 export async function register(req, res) {
     try {
+
+        if (req.user) return res.status(400).json({ message: "Déjà connecté" }); //si l'utilisateur est déja connecté il ne peux pas register
         const { name, lastname, username, email, password, confirmPassword } = req.body;
 
         if (!name || !lastname || !username || !email || !password || !confirmPassword) {
@@ -83,9 +103,10 @@ export async function register(req, res) {
     }
 }
 
-
 export async function login(req, res) {
     try {
+
+        if (req.user) return res.status(400).json({ message: "Déjà connecté" });
         const { email, password } = req.body;
 
         if (!email || !password) {
