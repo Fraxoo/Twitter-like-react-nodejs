@@ -33,9 +33,7 @@ export async function getProfil(req, res) {
                 message: "Veuillez vous connecter."
             });
         }
-
         return res.json(req.user);
-
     } catch (err) {
         return catchError(res, err);
     }
@@ -128,7 +126,7 @@ export async function login(req, res) {
              secure: false,
              sameSite: "lax"
              });
-        res.json({ message: "Connexion réussie" });
+        res.json({ message: "Connexion réussie", });
     } catch (err) {
         return catchError(res, err)
     }

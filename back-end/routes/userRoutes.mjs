@@ -16,7 +16,7 @@ import { isLoggedInJWT } from "../middleware/IsLoggedInJWT.mjs";
 const routeur = express.Router();
 
 routeur.get("/", getUsers)
-routeur.get("/me", isLoggedInJWT, getProfil);
+routeur.get("/me", isLoggedInJWT(), getProfil);
 routeur.post("/register", register);
 routeur.post("/login", login);
 routeur.post("/logout",logout);
