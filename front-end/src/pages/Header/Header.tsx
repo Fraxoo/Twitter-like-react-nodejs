@@ -1,10 +1,17 @@
 import logo from "../../assets/images/logo-white.png";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import "./header.css"
-
-
+import { useAuth } from "../../context/AuthContext";
 export default function Header() {
 
+    const { logout } = useAuth();
+
+    const navigate = useNavigate();
+
+    async function handleLogout() {
+        logout();
+        navigate("/login")
+    }
 
     return (
         <header>
@@ -48,6 +55,7 @@ export default function Header() {
                         <h1>Paramétres</h1>
                     </div>
                 </Link>
+                <button onClick={handleLogout}>Deconnexion</button>
                 <Link className="header-post" to={"/compose/post"}>
                     <p>Poster</p>
                 </Link>

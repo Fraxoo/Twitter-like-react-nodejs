@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./connexion.css"
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Login() {
@@ -9,9 +10,8 @@ export default function Login() {
 
     const [success, setSuccess] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({});
 
-    });
 
     async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setFormData({
@@ -26,6 +26,7 @@ export default function Login() {
             const res = await fetch("http://localhost:8000/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(formData)
             });
 
@@ -34,14 +35,13 @@ export default function Login() {
             if (!res.ok) {
                 const formattedErrors: Record<string, string> = {}
                 data.errors.forEach((err: any) => {
-                    formattedErrors[err.field], err.message
+                    formattedErrors[err.field] = err.message
                 })
                 setErrors(formattedErrors);
                 setSuccess("");
                 return;
             }
 
-            console.log("Connexion réussi");
             setSuccess("Connexion réussi!");
             setTimeout(() => {
                 navigate("/home")
@@ -61,8 +61,6 @@ export default function Login() {
                 <h2>Connexion</h2>
 
                 <form onSubmit={handleSubmit}>
-
-
                     <div className="form">
                         <input
                             type="email"
@@ -90,6 +88,8 @@ export default function Login() {
                         />
                         <label htmlFor="password" className="form_label">Mot de passe</label>
                     </div>
+
+                    <p>Pas encore de compte ? <Link to={"/register"}>Inscrivez-vous</Link></p>
 
                     {errors.password && <p className="error" >{errors.password}</p>}
                     {errors.global && <p className="error">{errors.global}</p>}

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import "./connexion.css";
 import { useState } from "react";
 
@@ -47,7 +47,7 @@ export default function Register() {
                 setSuccess("");
                 return;
             }
-            
+
             console.log("inscription réussi");
             setSuccess("Inscription réussi!");
             setTimeout(() => {
@@ -158,6 +158,8 @@ export default function Register() {
                         />
                         <label htmlFor="confirmPassword" className="form_label">Confirmer</label>
                     </div>
+
+                    <p>Déjà un compte ? <Link to={"/login"} >Connectez-vous</Link></p>
 
                     {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
                     {errors.global && <p className="error">{errors.global}</p>}

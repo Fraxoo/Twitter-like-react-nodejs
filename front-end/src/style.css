@@ -15,6 +15,7 @@ body {
 
 .content {
     display: flex;
+    gap: 5rem;
 }
 
 header {
@@ -27,12 +28,12 @@ header {
 
 main {
     display: flex;
-    flex: 1;
+    flex: 1.2;
     flex-direction: column;
+    border: 1px rgb(128, 128, 128, 0.5) solid;
 }
 
-.filter{
+.filter {
     display: flex;
     flex: 1;
 }
-
