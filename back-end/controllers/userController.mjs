@@ -34,6 +34,7 @@ export async function getProfil(req, res) {
             });
         }
         const data = {
+            id: req.user.id,
             name: req.user.name,
             lastname: req.user.lastname,
             username: req.user.username,
@@ -129,6 +130,17 @@ export async function login(req, res) {
             return sendErrors(res, [{ field: "global", message: "Email ou mot de passe incorrect." }], 401);
         }
 
+        const data = {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+            username: user.username,
+            bio: user.bio,
+            avatar_url: user.avatar_url,
+            followers_count: user.followers_count,
+            following_count: user.following_count
+        }
+
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.cookie("token", token, {
@@ -136,7 +148,7 @@ export async function login(req, res) {
              secure: false,
              sameSite: "lax"
              });
-        res.json({ message: "Connexion réussie", });
+        res.json(data);
     } catch (err) {
         return catchError(res, err)
     }
