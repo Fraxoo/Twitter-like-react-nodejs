@@ -33,7 +33,17 @@ export async function getProfil(req, res) {
                 message: "Veuillez vous connecter."
             });
         }
-        return res.json(req.user);
+        const data = {
+            name: req.user.name,
+            lastname: req.user.lastname,
+            username: req.user.username,
+            bio: req.user.bio,
+            avatar_url: req.user.avatar_url,
+            followers_count: req.user.followers_count,
+            following_count: req.user.following_count
+        }
+        
+        return res.json(data);
     } catch (err) {
         return catchError(res, err);
     }

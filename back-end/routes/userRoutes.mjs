@@ -23,8 +23,8 @@ routeur.post("/logout",logout);
 
 
 //SECURE PATH
-routeur.put("/update", isLoggedInJWT, updateUser);
-routeur.delete("/delete", isLoggedInJWT, deleteUser);
+routeur.put("/update", isLoggedInJWT(), updateUser);
+routeur.delete("/delete", isLoggedInJWT(), deleteUser);
 
 routeur.get("/:id", getUserByID); ////// HYPER IMPORTANT MET LES ROUTES DYNAMIQUE EN BAS SINON CA CASSE TOUT
 
