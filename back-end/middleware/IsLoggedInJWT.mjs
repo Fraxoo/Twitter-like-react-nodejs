@@ -19,7 +19,7 @@ export function isLoggedInJWT(){
 
             req.user = await User.findByPk(req.userId)
             if(!req.user) {
-                return res.status(401).json({message: "Unauthorized"})
+                return res.status(401).json({message: "Unauthorized test"})
             };
 
             next();
