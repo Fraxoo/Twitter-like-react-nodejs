@@ -10,23 +10,51 @@ button {
     border: 1px rgb(128, 128, 128, 0.5) solid;
 }
 
-.post-card a {
-    text-decoration: none;
-}
-
 .post-card-content {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
     padding: 1rem;
 }
 
-.post-card-content-user {
+.post-card-content-user a {
+    text-decoration: none;
+    font-weight: bold;
     display: flex;
     gap: 0.5rem;
 }
 
-.post-card-content-user-greyed{
+.post-card-content-user-user {
+    font-weight: bold;
+}
+
+.post-card-content-user-greyed {
     color: rgb(113, 118, 123);
     opacity: 1;
+    font-weight: 500;
     text-decoration: none;
+}
+
+.post-card-content-user-link {
+    position: relative;
+}
+
+.hover-under {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-under::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;  
+    width: 0;
+    height: 2px;
+    background: white;  
+    transition: width 0.2s ease;
+}
+
+.post-card-content-user-link:hover .hover-under::after {
+    width: 100%;
 }

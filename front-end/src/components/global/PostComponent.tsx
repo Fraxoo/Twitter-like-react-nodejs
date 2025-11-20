@@ -23,10 +23,12 @@ export default function PostComponent({ post }: { post: PostType }) {
     return (
         <div className="post-card">
             <div className="post-card-content">
-                    <Link className="post-card-content-user" to={`profil/${post.user.id}`} >
-                        {post && <p>{post.user.name} {post.user.lastname}</p>}
+                <div className="post-card-content-user">
+                    <Link to={`profil/${post.user.id}`} className="post-card-content-user-link" >
+                        {post && <p className="hover-under">{post.user.name} {post.user.lastname}</p>}
                         {post && <p className="post-card-content-user-greyed">@{post.user.username}</p>}
                     </Link>
+                </div>
                 {post && <p>{post.content}</p>}
             </div>
         </div >
