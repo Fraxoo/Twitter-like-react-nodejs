@@ -2,57 +2,60 @@ import { useState } from "react";
 import "./connexion.css"
 import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 
 export default function Login() {
+
+    const { setUser } = useAuth();
 
     const navigate = useNavigate();
 
     const [success, setSuccess] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [formData, setFormData] = useState({});
 
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
-    async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
-            ...formData, [e.target.name]: e.target.value,
+            ...formData,[e.target.name]: e.target.value
         })
     }
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        setSuccess("");
+        setErrors({});
         try {
+
             const res = await fetch("http://localhost:8000/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify(formData)
-            });
+            })
 
             const data = await res.json();
 
             if (!res.ok) {
-                const formattedErrors: Record<string, string> = {}
+                const formattedErrors: Record<string, string> = {};
                 data.errors.forEach((err: any) => {
-                    formattedErrors[err.field] = err.message
-                })
-                setErrors(formattedErrors);
-                setSuccess("");
-                return;
+                    formattedErrors[err.field] = err.message;
+                });
+                return
             }
 
+            setUser(data)
             setSuccess("Connexion réussi!");
             setTimeout(() => {
                 navigate("/home")
-            }, 1000)
-            setErrors({});
-
+            }, 1000);
         } catch (err) {
-            setErrors({
-                global: "Erreur serveur"
-            })
+            setErrors({ global: "Erreur veuillez reesayer " });
         }
+
     }
 
     return (

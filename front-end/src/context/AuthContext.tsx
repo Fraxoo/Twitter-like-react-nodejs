@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 type User = {
   id: number;
   name: string;
+  lastname: string,
   email: string;
   username: string;
 };
@@ -21,7 +22,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Charger le user au rafraîchissement de la page
   useEffect(() => {
     async function loadUser() {
       try {
@@ -29,13 +29,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           credentials: "include",
         });
         
+        console.log(res);
         if (res.ok) {
           const data = await res.json();
+          
           setUser(data);
         } else {
           const data = await res.json();
           console.log(data);
-          
         }
       } catch (err) {
         console.error("Erreur /me :", err);

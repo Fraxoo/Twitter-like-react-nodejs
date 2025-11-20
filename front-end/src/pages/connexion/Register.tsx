@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router";
 import "./connexion.css";
-import { useState } from "react";
+import {  useState } from "react";
 
 
 export default function Register() {
+
     const navigate = useNavigate();
 
+    const [success, setSuccess] = useState("");
+    const [errors, setErrors] = useState<{ [key: string]: String }>({});
     const [formData, setFormData] = useState({
         name: "",
         lastname: "",
@@ -15,54 +18,44 @@ export default function Register() {
         confirmPassword: ""
     });
 
-    const [errors, setErrors] = useState<{ [key: string]: string }>({})
-    const [success, setSuccess] = useState("")
-
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
-            ...formData, [e.target.name]: e.target.value
+            ...formData,[e.target.name]: e.target.value
         })
-        console.log(formData);
-
-    }
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setSuccess("")
+        setErrors({});
         try {
             const res = await fetch("http://localhost:8000/users/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
-            });
+            })
 
             const data = await res.json();
-
+        
             if (!res.ok) {
-                const formattedErrors: Record<string, string> = {}; //permet de faire { string : "" , string: ""}
-                data.errors.forEach((err: any) => {
+                console.log(data);
+                const formattedErrors: Record<string,string> = {};
+                data.errors.forEach((err:any) => {
                     formattedErrors[err.field] = err.message
-                })
+                });
                 setErrors(formattedErrors)
-                setSuccess("");
                 return;
             }
 
-            console.log("inscription réussi");
-            setSuccess("Inscription réussi!");
+            setSuccess("Inscription réussi!")
             setTimeout(() => {
                 navigate("/login")
-            }, 1000)
-            setErrors({});
-
+            }, 3000);
         } catch (err) {
-            console.log(err);
-            setErrors({
-                global: "Erreur de connexion au serveur"
-            })
+            console.error(err);
+            setErrors({ global: "Erreur veuillez réesayer " })
         }
     }
-
 
     return (
         <div className="register">

@@ -1,4 +1,10 @@
 
+.header-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
 
 header a{
     text-decoration: none;
@@ -8,7 +14,7 @@ header img {
     width: 2rem;
 }
 
-.header-content{
+.header-content-top{
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -37,4 +43,11 @@ header img {
 
 .header-post p {
     color: black;
+}
+
+.header-content-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2rem;
 }
