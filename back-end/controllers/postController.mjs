@@ -66,6 +66,8 @@ export async function createPost(req, res) {
             content: content.trim(),
             image_url: image_url || null
         });
+        console.log(req.body);
+        
         return res.status(201).json(newPost)
     } catch (err) {
         return catchError(res, err);

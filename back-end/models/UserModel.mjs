@@ -43,7 +43,7 @@ export const User = sequelize.define("User", {
     },
     role: { type: DataTypes.STRING, defaultValue: "user" },
     bio: { type: DataTypes.STRING, allowNull: true },
-    avatar_url: { type: DataTypes.STRING, allowNull: true },
+    avatar_url: { type: DataTypes.STRING, allowNull: true, defaultValue: "default-profil.jpg"},
     followers_count: { type: DataTypes.INTEGER, defaultValue: 0 },
     following_count: { type: DataTypes.INTEGER, defaultValue: 0 }
 }, {
