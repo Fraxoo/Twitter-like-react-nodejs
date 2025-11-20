@@ -1,6 +1,4 @@
-/* ===============================
-   RESET & BASE
-==================================*/
+
 *,
 *::before,
 *::after {
@@ -24,9 +22,7 @@
   --font: "Inter", system-ui, sans-serif;
 }
 
-/* ===============================
-   LAYOUT
-==================================*/
+
 .login,
 .register {
   height: 100vh;
@@ -59,9 +55,7 @@
   width: 100%;
 }
 
-/* ===============================
-   INPUT + LABEL (FLOATING LABEL)
-==================================*/
+
 .form {
   position: relative;
   width: 100%;
@@ -115,14 +109,12 @@
 .success {
   color: rgb(0, 185, 0);
   font-size: 13px;
-  margin-top: -10px;
   padding-left: 4px;
 }
 
 .error {
   color: var(--error);
   font-size: 13px;
-  margin-top: -10px;
   padding-left: 4px;
 }
 

@@ -1,4 +1,32 @@
-
-.post-form , input,button{
+.post-form,
+input,
+button {
     color: black;
+}
+
+
+.post-card {
+    display: flex;
+    border: 1px rgb(128, 128, 128, 0.5) solid;
+}
+
+.post-card a {
+    text-decoration: none;
+}
+
+.post-card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.post-card-content-user {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.post-card-content-user-greyed{
+    color: rgb(113, 118, 123);
+    opacity: 1;
+    text-decoration: none;
 }

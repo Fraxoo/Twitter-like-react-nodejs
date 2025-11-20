@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router";
 import "./connexion.css";
-import {  useState } from "react";
+import { useState } from "react";
+
+
 
 
 export default function Register() {
@@ -8,7 +10,7 @@ export default function Register() {
     const navigate = useNavigate();
 
     const [success, setSuccess] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: String }>({});
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [formData, setFormData] = useState({
         name: "",
         lastname: "",
@@ -16,18 +18,18 @@ export default function Register() {
         email: "",
         password: "",
         confirmPassword: ""
-    });
+    })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
-            ...formData,[e.target.name]: e.target.value
+            ...formData, [e.target.name]: e.target.value
         })
-    };
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setSuccess("")
         setErrors({});
+        setSuccess("");
         try {
             const res = await fetch("http://localhost:8000/users/register", {
                 method: "POST",
@@ -36,24 +38,25 @@ export default function Register() {
             })
 
             const data = await res.json();
-        
+            console.log(data);
+
+
             if (!res.ok) {
-                console.log(data);
-                const formattedErrors: Record<string,string> = {};
-                data.errors.forEach((err:any) => {
-                    formattedErrors[err.field] = err.message
-                });
-                setErrors(formattedErrors)
-                return;
+                const formattedErrors: Record<string, string> = {};
+                data.errors.forEach((error: any) => {
+                    formattedErrors[error.field] = error.message
+                })
+                setErrors(formattedErrors);
+                return
             }
 
-            setSuccess("Inscription réussi!")
+            setSuccess("Inscription réussi!");
             setTimeout(() => {
                 navigate("/login")
-            }, 3000);
+            }, 1000)
         } catch (err) {
             console.error(err);
-            setErrors({ global: "Erreur veuillez réesayer " })
+            setErrors({ global: "Erreur veuillez réesayer" });
         }
     }
 

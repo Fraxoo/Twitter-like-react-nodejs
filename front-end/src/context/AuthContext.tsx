@@ -28,11 +28,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const res = await fetch("http://localhost:8000/users/me", {
           credentials: "include",
         });
-        
+
         console.log(res);
         if (res.ok) {
           const data = await res.json();
-          
+
           setUser(data);
         } else {
           const data = await res.json();

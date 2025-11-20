@@ -1,51 +1,55 @@
 import { useState } from "react";
 import "./post.css"
+import { useNavigate } from "react-router";
 
 export default function CreatePost() {
-    const [content, setContent] = useState("");
-    const [file, setFile] = useState(null);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-    const [loading, setLoading] = useState(false);
 
+    const navigate = useNavigate();
 
+    const [success, setSuccess] = useState("")
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [formData, setFormData] = useState({
+        content: "",
+    });
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData, [e.target.name]: e.target.value
+        })
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError("");
+        setErrors({});
         setSuccess("");
-
-        if (!content.trim()) {
-            return setError("Le contenu du post ne peut pas être vide.");
-        }
-
-        const formData = new FormData();
-        formData.append("content", content);
-        if (file) formData.append("image", file);
-
         try {
-            setLoading(true);
-
             const res = await fetch("http://localhost:8000/post/create", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: formData,
-            });
+                body: JSON.stringify(formData)
+            })
 
             const data = await res.json();
+            console.log(data);
 
-            if (!res.ok) {
-                return setError(data.message || "Une erreur s'est produite.");
+            if(!res.ok){
+                const formattedErrors: Record<string,string> = {};
+                data.errors.forEach((err : any) => {
+                    formattedErrors[err.field] = err.message
+                });
+                setErrors(formattedErrors);
+                return;
             }
 
-            setSuccess("Post créé avec succès !");
-            setContent("");
-            setFile(null);
+            
 
+            setSuccess("Post ajouté avec succés!");
+            setTimeout(() => {
+                navigate("/home");
+            }, 1000);
         } catch (err) {
-            setError("Erreur de connexion au serveur.");
-        } finally {
-            setLoading(false);
+            setErrors({ global: "Erreur veuillez réesayer" })
         }
     }
 
@@ -56,10 +60,12 @@ export default function CreatePost() {
         <div className="post-container">
             <h1>Ajoutez un post</h1>
             <form className="post-form" action="" onSubmit={handleSubmit} >
-                <input className="post-form-input" type="text" placeholder="Quoi de neuf?" name="content" onChange={(e) => setContent(e.target.value)} />
+                <input className="post-form-input" type="text" placeholder="Quoi de neuf?" name="content" onChange={handleChange} />
                 <button>Ajoutez</button>
             </form>
-            {success && <p>{success}</p>}
+            {errors.content && <p className="error">{errors.content}</p>}
+            {errors.global && <p className="error">{errors.global}</p>}
+            {success && <p className="success">{success}</p>}
         </div>
     )
 }

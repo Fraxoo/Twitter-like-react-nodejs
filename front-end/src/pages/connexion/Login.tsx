@@ -7,21 +7,20 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
 
-    const { setUser } = useAuth();
+    const {setUser} = useAuth();
 
     const navigate = useNavigate();
 
     const [success, setSuccess] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
     const [formData, setFormData] = useState({
         email: "",
         password: ""
-    });
+    })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
-            ...formData,[e.target.name]: e.target.value
+            ...formData, [e.target.name]: e.target.value
         })
     }
 
@@ -30,32 +29,32 @@ export default function Login() {
         setSuccess("");
         setErrors({});
         try {
-
             const res = await fetch("http://localhost:8000/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(formData)
             })
-
             const data = await res.json();
 
-            if (!res.ok) {
-                const formattedErrors: Record<string, string> = {};
-                data.errors.forEach((err: any) => {
+            if(!res.ok){
+                const formattedErrors: Record<string,string> = {};
+                data.errors.forEach((err:any) => {
                     formattedErrors[err.field] = err.message;
-                });
-                return
+                })
+                setErrors(formattedErrors);
+                return;
             }
 
-            setUser(data)
+            setUser(data);
             setSuccess("Connexion réussi!");
             setTimeout(() => {
                 navigate("/home")
             }, 1000);
         } catch (err) {
-            setErrors({ global: "Erreur veuillez reesayer " });
+            console.error(err);
+            setErrors({ global : "Erreur veuillez réesayer"});
         }
-
     }
 
     return (
