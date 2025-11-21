@@ -29,7 +29,7 @@ function catchError(res, err) {
 
 export async function getAllPost(req, res) {
     try {
-        const postsData = await Post.findAll({ include: User });
+        const postsData = await Post.findAll({ include: User, order: [['updatedAt', 'DESC']] });
         if (!postsData || postsData.length === 0) {
             return sendErrors(res, [{ field: "global", msg: "Aucun post pour le moment" }], 404);
         }
