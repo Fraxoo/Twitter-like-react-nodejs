@@ -5,6 +5,7 @@ import express from "express";
 import { sequelize, testDBConnection } from "./config/database.mjs";
 import userRoutes from "./routes/userRoutes.mjs"
 import postRoutes from "./routes/postRoutes.mjs"
+import commentRoutes from "./routes/commentRoutes.mjs";
 
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cors({
 
 app.use("/users",userRoutes);
 app.use("/post",postRoutes)
+app.use("/comment",commentRoutes)
 
 
 async function main() {
@@ -29,7 +31,7 @@ async function main() {
         await testDBConnection();
         // await sequelize.sync({force: true});
         // await sequelize.sync({alter: true,force:true});
-        await sequelize.sync({alter: true})
+        await sequelize.sync()
 
         app.listen(process.env.PORT,() => {
             console.log(`Serveur lancé sur le port : ${process.env.PORT}`);

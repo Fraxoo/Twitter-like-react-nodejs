@@ -4,7 +4,8 @@ import { Post } from "../models/PostModel.mjs";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { User } from "../models/UserModel.mjs";
-
+import { Comment } from "../models/CommentModel.mjs";
+import { sequelize } from "../config/database.mjs";
 dotenv.config();
 
 const JWT_SECRET = process.env.PRIVATE_JWT_KEY;
@@ -29,10 +30,28 @@ function catchError(res, err) {
 
 export async function getAllPost(req, res) {
     try {
-        const postsData = await Post.findAll({ include: User, order: [['updatedAt', 'DESC']] });
+        const postsData = await Post.findAll({
+            include: [{ model: User }],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                    SELECT COUNT(*)
+                    FROM comment AS c
+                    WHERE c.post_id = Post.id
+                )`),
+                        "comments_count"
+                    ]
+                ]
+            },
+            order: [["updatedAt", "DESC"]],
+        });
         if (!postsData || postsData.length === 0) {
             return sendErrors(res, [{ field: "global", msg: "Aucun post pour le moment" }], 404);
         }
+
+        console.log(postsData);
+
 
         const posts = postsData.map(post => ({
             id: post.id,
@@ -40,14 +59,16 @@ export async function getAllPost(req, res) {
             image_url: post.image_url,
             createdAt: post.createdAt,
             updatedAt: post.updatedAt,
-            user_id: post.user_id,
+            commentCount: post.dataValues.comments_count,
             user: {
                 id: post.User.id,
                 name: post.User.name,
                 lastname: post.User.lastname,
                 username: post.User.username
-            }
+            },
+        
         }));
+        console.log(posts)
         return res.status(201).json(posts);
     } catch (err) {
         return catchError(res, err)

@@ -15,6 +15,10 @@ export const Post = sequelize.define("Post", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
 
 },{
     tableName: "post",
