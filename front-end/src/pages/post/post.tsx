@@ -33,16 +33,15 @@ export default function CreatePost() {
             const data = await res.json();
             console.log(data);
 
-            if(!res.ok){
-                const formattedErrors: Record<string,string> = {};
-                data.errors.forEach((err : any) => {
+            if (!res.ok) {
+                const formattedErrors: Record<string, string> = {};
+                data.errors.forEach((err: any) => {
                     formattedErrors[err.field] = err.message
                 });
                 setErrors(formattedErrors);
                 return;
             }
 
-            
 
             setSuccess("Post ajouté avec succés!");
             setTimeout(() => {

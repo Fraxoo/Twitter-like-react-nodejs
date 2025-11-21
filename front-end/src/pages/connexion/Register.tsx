@@ -77,7 +77,7 @@ export default function Register() {
                             placeholder=" "
                             autoComplete="name"
                         />
-                        <label htmlFor="name" className="form_label">Name</label>
+                        <label htmlFor="name" className="form_label">Prenom</label>
                     </div>
 
                     {errors.name && <p className="error">{errors.name}</p>}
