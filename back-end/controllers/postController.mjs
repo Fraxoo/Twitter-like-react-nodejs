@@ -38,7 +38,7 @@ export async function getPostWithReplies(req, res) {
                 attributes: {
                     include: [
                         [
-                            sequelize.literal(`(SELECT COUNT (*) FROM post AS reply WHERE reply.parent_id = Post.id)`),"comments_count" //comments count mais c'est post count techniquement
+                            sequelize.literal(`(SELECT COUNT (*) FROM post AS reply WHERE reply.parent_id = Post.id)`), "comments_count" //comments count mais c'est post count techniquement
                         ]
                     ],
 
@@ -55,12 +55,21 @@ export async function getPostWithReplies(req, res) {
             include: [{ model: User }],
             offset,
             limit: 10,
-            order: [["createdAt", "ASC"]],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(SELECT COUNT (*) FROM post AS reply WHERE reply.parent_id = Post.id)`), "comments_count" //comments count mais c'est post count techniquement
+                    ]
+                ],
+
+            },
+            order: [["createdAt", "DESC"]],
         });
 
         const replies = repliesData.map(reply => ({
             id: reply.id,
             content: reply.content,
+            commentCount: reply.dataValues.comments_count,
             createdAt: reply.createdAt,
             updatedAt: reply.updatedAt,
             user: {
