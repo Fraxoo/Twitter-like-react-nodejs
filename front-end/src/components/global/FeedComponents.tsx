@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import PostCommentComponent from "./PostCommentComponent"
 import InfiniteScroll from "react-infinite-scroll-component"
 import Loading from "./LoadingComponents";
@@ -64,7 +64,7 @@ export default function Feed() {
                 hasMore={hasMore}
                 loader={<Loading />}
                 endMessage={
-                    <p style={{ textAlign: 'center' }}>
+                    <p className="end-message">
                         <b>Yay! You have seen it all</b>
                     </p>
                 }
@@ -74,8 +74,9 @@ export default function Feed() {
                 {posts.map((post) => {
                     return <PostCommentComponent key={post.id} post={post} />
                 })}
-            </InfiniteScroll>
+            </InfiniteScroll> 
+            {errors.global && <p>{errors.global}</p>} 
         </div>
 
-    )
+    )// changer les messages d'erreur ne sont pas au bon format (regarder register et connexion )
 }
