@@ -1,3 +1,4 @@
+import { useState } from "react";
 
 
 type PostType = {
@@ -16,6 +17,37 @@ type PostType = {
 
 export default function SeePostOwnerComponent({ post }: { post: PostType }) {
 
+    const [errors,setErrors] = useState<{ [key: string]: string}>({})
+    const [content, setContent] = useState<{content: string}>({
+        content: ""
+    }) 
+
+
+    async function handleCreateComment(e:React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        try {
+            const res = await fetch(`http://localhost:8000/post/create/${post.id}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(content)
+            });
+
+            const result = await res.json();
+            if (!res.ok) {
+                console.error(result);
+                return;
+            }
+
+            console.log("Commentaire créé :", result);
+
+        } catch (error) {
+            console.error("Erreur serveur:", error);
+            setErrors({ global: "Erreur veuillez réesayer" })
+        }
+    }
 
     return (
         <div className="see-post-owner-card">
@@ -42,10 +74,11 @@ export default function SeePostOwnerComponent({ post }: { post: PostType }) {
 
             <div className="see-post-owner-card-respond">
                 {/* image */}
-                <form action="">
-                    <input type="text" name="content" placeholder="Postez votre réponse" />
+                <form onSubmit={handleCreateComment}>
+                    <input type="text" onChange={(e) => setContent({ content: e.target.value })} name="content" placeholder="Postez votre  réponse" />
                     <button>Répondre</button>
                 </form>
+                {errors.global && <p className="error">{errors.global}</p>}
             </div>
         </div>
     )

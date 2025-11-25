@@ -1,7 +1,7 @@
 import Loading from "../../components/global/LoadingComponents"
 import Header from "../Header/Header"
 import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 import SeePostOwnerComponent from "../../components/global/SeePostOwnerComponent";
 import "./post.css"
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -32,8 +32,9 @@ export default function SeePost() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [hasMore, setHasMore] = useState(true);
     const [offset, setOffset] = useState(0);
-
     const { id } = useParams();
+
+    
 
     useEffect(() => {
         if (!id) return;
@@ -48,6 +49,8 @@ export default function SeePost() {
             try {
                 const res = await fetch(`http://localhost:8000/post/get/${id}/0`);
                 const data = await res.json();
+                console.log(data);
+                
 
                 if (!res.ok) {
                     setErrors({ global: "Erreur serveur" });

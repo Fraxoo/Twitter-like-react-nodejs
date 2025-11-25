@@ -21,7 +21,6 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
 
     const [showCommentModal, setShowCommentModal] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    console.log(post);
     
 
 
