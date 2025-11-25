@@ -3,22 +3,26 @@ import express from "express"
 
 import {
     getAllPost,
-    getPostByID,
+    getPostWithReplies,
     createPost,
+    createCommentPost,
     updatePost,
-    deletePost
+    deletePost,
+    getAllPostWithLimit
 } from "../controllers/postController.mjs";
 
 const routeur = express.Router();
 
-routeur.get("/get/", getAllPost);
-routeur.get("/get/:id", getPostByID);
+routeur.get("/get/all", getAllPost);
+routeur.get("/get/all/:offset", getAllPostWithLimit)
+routeur.get("/get/:id", getPostWithReplies);
 
 
 //secure path
-routeur.post("/create",isLoggedInJWT(), createPost);
-routeur.put("/update/:id", isLoggedInJWT(),updatePost);
-routeur.delete("/delete/:id",isLoggedInJWT(),deletePost);
+routeur.post("/create", isLoggedInJWT(), createPost);
+routeur.post("/create/:postid", isLoggedInJWT(),createCommentPost)
+routeur.put("/update/:id", isLoggedInJWT(), updatePost);
+routeur.delete("/delete/:id", isLoggedInJWT(), deletePost);
 
 
 export default routeur

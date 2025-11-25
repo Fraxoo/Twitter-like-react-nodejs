@@ -1,6 +1,5 @@
 import { User } from "./UserModel.mjs";
 import { Post } from "./PostModel.mjs";
-import { Comment } from "./CommentModel.mjs";
 
 
 
@@ -9,27 +8,26 @@ User.hasMany(Post,{
     onDelete: "CASCADE"
 });
 
-User.hasMany(Comment,{
-    foreignKey: "user_id",
-    onDelete: "CASCADE"
-})
 
 Post.belongsTo(User,{
     foreignKey: "user_id"
 })
 
-Post.hasMany(Comment,{
-    foreignKey: "post_id",
-    onDelete: "CASCADE"
-})
+Post.belongsTo(Post, {
+    as: "parent",
+    foreignKey: "parent_id",
+    constraints: false
+});
+
+Post.hasMany(Post, {
+    as: "replies",
+    foreignKey: "parent_id",
+    constraints: false //Securité a verifier 
+});
 
 
-Comment.belongsTo(User,{
-    foreignKey: "user_id"
-})
-Comment.belongsTo(Post,{
-    foreignKey: "post_id"
-})
 
 
-export {User,Post,Comment}
+
+
+export {User,Post}
