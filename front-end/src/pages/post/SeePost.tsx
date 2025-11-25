@@ -35,11 +35,10 @@ export default function SeePost() {
 
     const { id } = useParams();
 
-    // 🟦 Reset + load du post + load premières replies
     useEffect(() => {
         if (!id) return;
 
-        // Reset state quand l’URL change
+        // Reset state quand l’url change
         setPost(undefined);
         setReplies([]);
         setOffset(0);
