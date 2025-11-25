@@ -15,7 +15,7 @@ const routeur = express.Router();
 
 routeur.get("/get/all", getAllPost);
 routeur.get("/get/all/:offset", getAllPostWithLimit)
-routeur.get("/get/:id", getPostWithReplies);
+routeur.get("/get/:id/:offset", getPostWithReplies);
 
 
 //secure path
