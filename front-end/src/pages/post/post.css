@@ -94,20 +94,21 @@ button {
 }
 
 
-.back-home {
+.go-back {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     margin: 0.7rem;
 }
 
-.back-home a {
-    padding: 0.7rem;
+.go-back-button {
+    padding: 1rem;
     margin-top: 0.2rem;
     border-radius: 10rem;
+    cursor: pointer;
 }
 
-.back-home a:hover {
+.go-back-button:hover {
     background-color: rgb(128, 128, 128, 0.2);
 }
 

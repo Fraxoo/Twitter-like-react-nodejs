@@ -33,7 +33,6 @@ export default function Feed() {
                 });
                 const data = await res.json();
 
-
                 if (!res.ok) {
                     setErrors({ global: "Erreur serveur" })
                     return;
@@ -58,7 +57,7 @@ export default function Feed() {
     return (
 
         <div>
-
+            
             <InfiniteScroll
                 dataLength={posts.length} //This is important field to render the next data
                 next={loadNext}

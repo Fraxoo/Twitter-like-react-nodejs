@@ -21,6 +21,8 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
 
     const [showCommentModal, setShowCommentModal] = useState(false);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    console.log(post);
+    
 
 
     async function handleCreateComment(data: { content: string }) {
@@ -52,12 +54,12 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
             <div className="post-card">
                 <div className="post-card-content">
                     <div className="post-card-content-user">
-                        <Link to={`profil/${post.user.id}`} className="post-card-content-user-link" >
+                        <Link to={`/profil/${post.user.id}`} className="post-card-content-user-link" >
                             {post && <p className="hover-under">{post.user.name} {post.user.lastname}</p>}
                             {post && <p className="post-card-content-user-greyed">@{post.user.username}</p>}
                         </Link>
                     </div>
-                    <Link to={`/post/${post.id}`}>
+                    <Link  to={`/post/${post.id}`}>
                         {post && <p>{post.content}</p>}
                     </Link>
                 </div>

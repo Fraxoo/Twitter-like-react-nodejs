@@ -46,3 +46,8 @@ main {
 .test{
     min-height: 300vh;
 }
+
+
+.end-message{
+    text-align: center;
+}

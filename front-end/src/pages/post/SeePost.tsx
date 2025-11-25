@@ -4,6 +4,9 @@ import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router";
 import SeePostOwnerComponent from "../../components/global/SeePostOwnerComponent";
 import "./post.css"
+import InfiniteScroll from "react-infinite-scroll-component";
+import PostCommentComponent from "../../components/global/PostCommentComponent";
+import { useNavigate } from "react-router";
 
 
 type PostType = {
@@ -21,54 +24,123 @@ type PostType = {
 };
 
 export default function SeePost() {
+    const navigate = useNavigate();
+
 
     const [post, setPost] = useState<PostType>();
+    const [replies, setReplies] = useState<PostType[]>([]);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [hasMore,setHasMore] = useState(true)
+    const [hasMore, setHasMore] = useState(true);
+    const [offset, setOffset] = useState(0);
 
-    const postId = useParams();
-    console.log(postId);
-    console.log(post);
-        
+    const { id } = useParams();
 
-
+    // 🟦 Reset + load du post + load premières replies
     useEffect(() => {
-        const loadPost = async () => {
-            try {
-                const res = await fetch(`http://localhost:8000/post/get/${postId.id}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                })
+        if (!id) return;
 
+        // Reset state quand l’URL change
+        setPost(undefined);
+        setReplies([]);
+        setOffset(0);
+        setHasMore(true);
+
+        const loadPostAndFirstReplies = async () => {
+            try {
+                const res = await fetch(`http://localhost:8000/post/get/${id}/0`);
                 const data = await res.json();
+
                 if (!res.ok) {
                     setErrors({ global: "Erreur serveur" });
                     return;
                 }
-                setHasMore(data.hasMore)
+
                 setPost(data.post);
+                setReplies(data.replies);
+                setHasMore(data.hasMore);
+
             } catch (err) {
-                console.error(err)
+                console.error(err);
             }
-        }
+        };
 
-        loadPost();
-    }, [postId])
+        loadPostAndFirstReplies();
+    }, [id]); // 👈 TRÈS IMPORTANT
 
+
+    // 🟦 Charger les replies suivantes
+    useEffect(() => {
+        // offset 0 = déjà chargé plus haut
+        if (offset === 0) return;
+        if (!id) return;
+
+        const loadMoreReplies = async () => {
+            try {
+                const res = await fetch(`http://localhost:8000/post/get/${id}/${offset}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    setErrors({ global: "Erreur serveur" });
+                    return;
+                }
+
+                if (data.replies.length === 0) {
+                    setHasMore(false);
+                    return;
+                }
+
+                setReplies(prev => [...prev, ...data.replies]);
+                setHasMore(data.hasMore);
+
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        loadMoreReplies();
+    }, [offset]); // 👈 ici seulement offset
+
+
+    function loadNext() {
+        setOffset(prev => prev + 10);
+    }
+
+    function goBack() {
+        navigate(-1)
+    }
 
 
     return (
         <div className="content">
             <Header />
-            <main>
-                <div className="back-home">
-                    <Link to={"/home"}>
+            <main id="scrollable">
+                <div className="go-back">
+                    <div className="go-back-button" onClick={goBack}>
                         <i className="fa-solid fa-arrow-left"></i>
-                    </Link>
+                    </div>
                     <h2>Post</h2>
                 </div>
-                {post && <SeePostOwnerComponent  post={post}/>}
+                {post && <SeePostOwnerComponent post={post} />}
                 {errors.global && <p className="error">{errors.global}</p>}
+                <div>
+                    <InfiniteScroll
+                        dataLength={replies.length} //This is important field to render the next data
+                        next={loadNext}
+                        hasMore={hasMore}
+                        loader={<Loading />}
+                        endMessage={
+                            <p className="end-message">
+                                <b>Yay! You have seen it all</b>
+                            </p>
+                        }
+                        scrollableTarget="scrollable"
+
+                    >
+                        {replies.map((replie) => {
+                            return <PostCommentComponent key={replie.id} post={replie} />
+                        })}
+                    </InfiniteScroll>
+                </div>
             </main>
             <div className="filter">
                 <Loading />
