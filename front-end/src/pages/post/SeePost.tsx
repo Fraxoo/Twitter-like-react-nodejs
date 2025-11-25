@@ -65,12 +65,10 @@ export default function SeePost() {
         };
 
         loadPostAndFirstReplies();
-    }, [id]); // 👈 TRÈS IMPORTANT
+    }, [id]); //permet le rechargement de "la page"
 
 
-    // 🟦 Charger les replies suivantes
     useEffect(() => {
-        // offset 0 = déjà chargé plus haut
         if (offset === 0) return;
         if (!id) return;
 
@@ -98,7 +96,7 @@ export default function SeePost() {
         };
 
         loadMoreReplies();
-    }, [offset]); // 👈 ici seulement offset
+    }, [offset]); //encore une fois se baser sur l'offset pas le chargement de la page en elle meme 
 
 
     function loadNext() {
