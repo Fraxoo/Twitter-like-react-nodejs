@@ -13,16 +13,10 @@ export default function Home() {
     const {user} = useAuth();
     console.log(user);
 
-
-    
-   
-
-
-
     return (
         <div className="content">
             <Header />
-            <main>
+            <main id="scrollable">
                 <h1>USERID : {user?.id}</h1>
             
                 <FeedChoice />

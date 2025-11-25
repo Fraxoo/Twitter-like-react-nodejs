@@ -17,13 +17,15 @@ type PostType = {
 };
 
 
-export default function PostComponent({ post }: { post: PostType }) {
+export default function PostCommentComponent({ post }: { post: PostType }) {
 
     const [showCommentModal, setShowCommentModal] = useState(false);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
 
     async function handleCreateComment(data: { content: string }) {
         try {
-            const res = await fetch(`http://localhost:8000/comment/create/${post.id}`, {
+            const res = await fetch(`http://localhost:8000/post/create/${post.id}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -42,6 +44,7 @@ export default function PostComponent({ post }: { post: PostType }) {
 
         } catch (error) {
             console.error("Erreur serveur:", error);
+            setErrors({ global: "Erreur veuillez réesayer" })
         }
     }
     return (
@@ -54,17 +57,20 @@ export default function PostComponent({ post }: { post: PostType }) {
                             {post && <p className="post-card-content-user-greyed">@{post.user.username}</p>}
                         </Link>
                     </div>
-                    {post && <p>{post.content}</p>}
+                    <Link to={`/post/${post.id}`}>
+                        {post && <p>{post.content}</p>}
+                    </Link>
                 </div>
                 <div className="post-card-function">
-                    <div className="post-card-function-comment">
-                        <button title="comment" onClick={() => setShowCommentModal(true)}><i className="fa-regular fa-comment"></i></button>
+                    <div className="post-card-function-comment" onClick={() => setShowCommentModal(true)}>
+                        <button title="comment" ><i className="fa-regular fa-comment"></i></button>
                         {post && <p>{post.commentCount}</p>}
                     </div>
                 </div>
             </div >
 
             {showCommentModal && <CommentModal post={post} onSubmit={handleCreateComment} onClose={() => setShowCommentModal(false)} />}
+            {errors.global && <p>{errors.global}</p>}
 
         </>
     )

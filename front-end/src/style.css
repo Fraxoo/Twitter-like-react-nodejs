@@ -17,6 +17,7 @@ body {
     display: flex;
     gap: 5rem;
     max-height: 100vh;
+    height: fit-content;
 }
 
 header {
@@ -42,3 +43,6 @@ main {
     flex: 1;
 }
 
+.test{
+    min-height: 300vh;
+}

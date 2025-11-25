@@ -57,7 +57,7 @@ export default function Header() {
                         </div>
                     </Link>
                     <button onClick={handleLogout}>Deconnexion</button>
-                    <Link className="header-post" to={"/post"}>
+                    <Link className="header-post" to={"/post/add"}>
                         <p>Poster</p>
                     </Link>
                 </div>

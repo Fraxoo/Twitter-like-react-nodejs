@@ -3,7 +3,9 @@ import Home from "./pages/home/Home";
 import Register from "./pages/connexion/Register";
 import Login from "./pages/connexion/Login";
 import { AuthProvider } from "./context/AuthContext";
-import  Post  from "./pages/post/post";
+import CreatePost from "./pages/post/AddPost";
+import SeePost from "./pages/post/SeePost";
+
 
 export default function App() {
     return (
@@ -11,7 +13,8 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
-                <Route path="/post" element={<Post/>}/>
+                <Route path="/post/:id" element={<SeePost/>}/>
+                <Route path="/post/add" element={<CreatePost/>}/>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
             </Routes>

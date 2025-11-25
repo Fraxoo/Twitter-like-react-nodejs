@@ -1,5 +1,9 @@
 
 
+main a {
+    text-decoration: none;
+}
+
 .home-feed-choice {
     display: flex;
     justify-content: space-around;
