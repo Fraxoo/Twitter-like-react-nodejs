@@ -30,6 +30,7 @@ export default function Feed() {
                 const res = await fetch(`http://localhost:8000/post/get/all/${offset}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
+                    credentials: "include"
                 });
                 const data = await res.json();
 

@@ -15,6 +15,8 @@ type PostType = {
     image_url?: string | null;
     createdAt: string;
     commentCount: number;
+    isLiked: boolean;
+    likesCount: number;
     user: {
         id: number;
         name: string;
@@ -22,6 +24,7 @@ type PostType = {
         username: string;
     };
 };
+
 
 export default function SeePost() {
     const navigate = useNavigate();
@@ -34,7 +37,7 @@ export default function SeePost() {
     const [offset, setOffset] = useState(0);
     const { id } = useParams();
 
-    
+
 
     useEffect(() => {
         if (!id) return;
@@ -47,10 +50,16 @@ export default function SeePost() {
 
         const loadPostAndFirstReplies = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/post/get/${id}/0`);
+                const res = await fetch(`http://localhost:8000/post/get/${id}/0`, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                });
                 const data = await res.json();
                 console.log(data);
-                
+
 
                 if (!res.ok) {
                     setErrors({ global: "Erreur serveur" });
@@ -76,7 +85,13 @@ export default function SeePost() {
 
         const loadMoreReplies = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/post/get/${id}/${offset}`);
+                const res = await fetch(`http://localhost:8000/post/get/${id}/${offset}`, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                });
                 const data = await res.json();
 
                 if (!res.ok) {
