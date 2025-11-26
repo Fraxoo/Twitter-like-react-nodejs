@@ -2,20 +2,7 @@ import { useEffect, useState } from "react"
 import PostCommentComponent from "./PostCommentComponent"
 import InfiniteScroll from "react-infinite-scroll-component"
 import Loading from "./LoadingComponents";
-
-type PostType = {
-    id: number;
-    content: string;
-    image_url?: string | null;
-    createdAt: string;
-    commentCount: number;
-    user: {
-        id: number;
-        name: string;
-        lastname: string;
-        username: string;
-    };
-};
+import type  { PostType } from "../../types/PostType";
 
 export default function Feed() {
 

@@ -24,7 +24,6 @@ export default function Home() {
             </main>
             <div className="filter">
                 <Loading />
-
             </div>
         </div>
     )

@@ -20,7 +20,7 @@ type PostType = {
 
 export default function PostStatsComponents({ post }: { post: PostType }) {
     const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  
+
     const [isLiked, setIsLiked] = useState(post.isLiked);
     const handleRemoveLike = async () => {
         try {
@@ -73,10 +73,12 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
                 <button title="comment" ><i className="fa-regular fa-comment"></i></button>
                 <p>{post.commentCount}</p>
             </div>
-            <div className="post-stats-like">
-                {isLiked ? <i onClick={handleRemoveLike} className="fa-solid liked fa-heart"></i> : <i onClick={handleAddLike} className="fa-regular fa-heart"></i>}
+            <div onClick={isLiked ? handleRemoveLike : handleAddLike} className={`post-stats-like ${isLiked ? "liked" : "not-liked"}`}>
+                <i className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}/>
+                <p>{post.likesCount}</p>
             </div>
-        
+
+
 
         </div>
     )

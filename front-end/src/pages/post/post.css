@@ -1,3 +1,5 @@
+/* ========== GLOBAL ========== */
+
 .post-form,
 input,
 button {
@@ -5,12 +7,13 @@ button {
 }
 
 
+/* ========== POST CARD (LISTE / FEED) ========== */
+
 .post-card {
     display: flex;
-    border-bottom: 1px rgb(128, 128, 128, 0.3) solid;
     flex-direction: column;
     padding: 0.5rem 1rem;
-
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
 }
 
 .post-card-content {
@@ -20,34 +23,33 @@ button {
     overflow-wrap: anywhere;
 }
 
+/* Ligne user + pseudo */
+
 .post-card-content-user a {
-    text-decoration: none;
-    font-weight: bold;
     display: flex;
     gap: 0.3rem;
-}
-
-.post-card-function {
-    margin-top: 0.4rem;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .post-card-content-user-user {
     font-weight: bold;
 }
 
-.see-post-owner-card-profil h1 {
-    margin: 0;
-    line-height: normal;
-    padding: 0;
-}
-
-.see-post-owner-card-profil-greyed-out,
-.post-card-content-user-greyed {
+.post-card-content-user-greyed,
+.see-post-owner-card-profil-greyed-out {
     color: rgb(113, 118, 123);
     opacity: 1;
     font-weight: 500;
     text-decoration: none;
 }
+
+.post-card-function {
+    margin-top: 0.4rem;
+}
+
+
+/* ========== LIEN USER + HOVER SOULIGNÉ ========== */
 
 .post-card-content-user-link {
     position: relative;
@@ -73,27 +75,18 @@ button {
     width: 100%;
 }
 
-.post-stats{
+
+/* ========== STATS (COMMENTAIRES / LIKES) ========== */
+
+.post-stats {
     display: flex;
     align-items: center;
     justify-content: space-around;
 }
 
-.post-stats-comment{
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    width: fit-content;
-    border-radius: 1rem;
-}
-
 .post-stats p,
-.post-stats i{
-    color: rgb(255, 255, 255, 0.5);
+.post-stats i {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .post-stats button {
@@ -101,9 +94,23 @@ button {
     border: none;
 }
 
-/* Hover : fond léger + change couleur icône et texte */
-.posts-stats:hover {
-    background: rgba(29, 155, 240, 0.1);
+
+
+/* ----- Commentaires ----- */
+
+.post-stats-comment {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    width: fit-content;
+}
+
+.post-stats-comment:hover{
+    background-color: rgb(29, 155, 240, 0.2);
 }
 
 .post-stats-comment:hover p,
@@ -111,6 +118,67 @@ button {
     color: rgb(29, 155, 240);
 }
 
+/* ----- Likes ----- */
+
+.post-stats-like {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.post-stats-like:hover {
+    background-color: rgba(252, 60, 60, 0.2);
+}
+
+/* Si la div a la classe "liked" */
+.post-stats-like.liked p,
+.post-stats-like.liked i {
+    color: rgb(252, 60, 60);
+}
+
+/* Si tu veux garder "not-liked" pour le hover */
+.post-stats-like.not-liked:hover p,
+.post-stats-like.not-liked:hover i {
+    color: rgb(252, 60, 60);
+}
+
+
+/* ========== PAGE SEE POST / DÉTAIL POST ========== */
+
+.see-post-owner-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0 1rem 1rem 1rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.see-post-owner-card-content {
+    overflow-wrap: anywhere;
+}
+
+.see-post-owner-card-stats {
+    border-top: 1px solid rgba(128, 128, 128, 0.3);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.see-post-owner-card-profil h1 {
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+
+.see-post-owner-card-respond form {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* ========== BOUTON RETOUR ========== */
 
 .go-back {
     display: flex;
@@ -126,29 +194,5 @@ button {
 }
 
 .go-back-button:hover {
-    background-color: rgb(128, 128, 128, 0.2);
-}
-
-
-.see-post-owner-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin: 0rem 1rem 1rem 1rem;
-    border-bottom: 1px rgb(128, 128, 128, 0.3) solid;
-
-}
-
-.see-post-owner-card-content {
-    overflow-wrap: anywhere;
-}
-
-.see-post-owner-card-stats {
-    border-top: 1px rgb(128, 128, 128, 0.3) solid;
-    border-bottom: 1px rgb(128, 128, 128, 0.3) solid;
-}
-
-.see-post-owner-card-respond form {
-    display: flex;
-    justify-content: space-between;
+    background-color: rgba(128, 128, 128, 0.2);
 }
