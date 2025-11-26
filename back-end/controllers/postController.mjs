@@ -1,7 +1,5 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import { Like } from "../models/LikeModel.mjs";
 import { Post } from "../models/PostModel.mjs";
-import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { User } from "../models/UserModel.mjs";
 import { sequelize } from "../config/database.mjs";
@@ -30,19 +28,42 @@ export async function getPostWithReplies(req, res) {
     try {
         const id = Number(req.params.id);
         const offset = Number(req.params.offset) || 0;
+        const user_id = req.user?.id; // important pour "isLiked"
 
         let postData = null;
+
+        // Charger le post seulement au premier offset
         if (offset === 0) {
             postData = await Post.findByPk(id, {
                 include: [{ model: User }],
                 attributes: {
                     include: [
+                        // COUNT des replies
                         [
-                            sequelize.literal(`(SELECT COUNT (*) FROM post AS reply WHERE reply.parent_id = Post.id)`), "comments_count" //comments count mais c'est post count techniquement
-                        ]
-                    ],
+                            sequelize.literal(`
+                                (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                            `),
+                            "comments_count"
+                        ],
 
-                },
+                        // COUNT des likes
+                        [
+                            sequelize.literal(`
+                                (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                            `),
+                            "likes_count"
+                        ],
+
+                        // Est-ce que l'utilisateur a liké ?
+                        [
+                            sequelize.literal(`
+                                (SELECT COUNT(*) FROM likes AS l
+                                WHERE l.post_id = Post.id AND l.user_id = ${user_id || 0})
+                            `),
+                            "isLiked"
+                        ]
+                    ]
+                }
             });
 
             if (!postData) {
@@ -50,26 +71,47 @@ export async function getPostWithReplies(req, res) {
             }
         }
 
+        // -------------------------
+        // RÉCUPÉRATION DES REPLIES
+        // -------------------------
+
         const repliesData = await Post.findAll({
             where: { parent_id: id },
             include: [{ model: User }],
             offset,
             limit: 10,
+            order: [["createdAt", "DESC"]],
             attributes: {
                 include: [
                     [
-                        sequelize.literal(`(SELECT COUNT (*) FROM post AS reply WHERE reply.parent_id = Post.id)`), "comments_count" //comments count mais c'est post count techniquement
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                        `),
+                        "comments_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                        `),
+                        "likes_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l
+                            WHERE l.post_id = Post.id AND l.user_id = ${user_id || 0})
+                        `),
+                        "isLiked"
                     ]
-                ],
-
-            },
-            order: [["createdAt", "DESC"]],
+                ]
+            }
         });
 
         const replies = repliesData.map(reply => ({
             id: reply.id,
             content: reply.content,
             commentCount: reply.dataValues.comments_count,
+            likesCount: reply.dataValues.likes_count,
+            isLiked: !!reply.dataValues.isLiked, //!! renvoie un boolean
             createdAt: reply.createdAt,
             updatedAt: reply.updatedAt,
             user: {
@@ -79,6 +121,7 @@ export async function getPostWithReplies(req, res) {
                 username: reply.User.username
             }
         }));
+
 
         return res.status(200).json({
             post:
@@ -90,6 +133,8 @@ export async function getPostWithReplies(req, res) {
                         createdAt: postData.createdAt,
                         updatedAt: postData.updatedAt,
                         commentCount: postData.dataValues.comments_count,
+                        likesCount: postData.dataValues.likes_count,
+                        isLiked: !!postData.dataValues.isLiked,
                         user: {
                             id: postData.User.id,
                             name: postData.User.name,
@@ -97,7 +142,7 @@ export async function getPostWithReplies(req, res) {
                             username: postData.User.username
                         }
                     }
-                    : null, // apres offset 0 on ne renvoie plus le post
+                    : null,
             replies,
             hasMore: replies.length === 10
         });
@@ -106,6 +151,7 @@ export async function getPostWithReplies(req, res) {
         return catchError(res, err);
     }
 }
+
 
 
 export async function getAllPost(req, res) {
