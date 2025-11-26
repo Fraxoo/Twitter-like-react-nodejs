@@ -9,7 +9,7 @@ import {
 const routeur = express.Router();
 
 
-routeur.post("/add", isLoggedInJWT(), addLikeToPost);
-routeur.post("/remove", isLoggedInJWT(), removeLikeFromPost)
+routeur.post("/add/:postId", isLoggedInJWT(), addLikeToPost);
+routeur.post("/remove/:postId", isLoggedInJWT(), removeLikeFromPost)
 
 export default routeur;

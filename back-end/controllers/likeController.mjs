@@ -19,7 +19,7 @@ function catchError(res, err) {
 
 export async function addLikeToPost(req, res) {
     try {
-        const post_id = req.params.id;
+        const post_id = req.params.postId;
         const user_id = req.user.id;
 
         if (!post_id || !user_id) {
@@ -44,7 +44,7 @@ export async function addLikeToPost(req, res) {
 
 export async function removeLikeFromPost(req, res) {
     try {
-        const post_id = req.params.id;
+        const post_id = req.params.postId;
         const user_id = req.user.id;
 
         if (!user_id || !post_id) {

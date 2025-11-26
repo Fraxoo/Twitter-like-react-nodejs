@@ -13,9 +13,9 @@ import {
 
 const routeur = express.Router();
 
-routeur.get("/get/all", getAllPost);
-routeur.get("/get/all/:offset", getAllPostWithLimit)
-routeur.get("/get/:id/:offset", getPostWithReplies);
+routeur.get("/get/all", isLoggedInJWT(),getAllPost);
+routeur.get("/get/all/:offset", isLoggedInJWT(),getAllPostWithLimit)
+routeur.get("/get/:id/:offset", isLoggedInJWT(),getPostWithReplies);
 
 
 //secure path

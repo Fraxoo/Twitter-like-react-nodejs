@@ -26,19 +26,18 @@ function catchError(res, err) {
 
 export async function getPostWithReplies(req, res) {
     try {
+        console.log(req.user);
+        
         const id = Number(req.params.id);
         const offset = Number(req.params.offset) || 0;
-        const user_id = req.user?.id; // important pour "isLiked"
-
+        const user_id = Number(req.user.id) ;
         let postData = null;
 
-        // Charger le post seulement au premier offset
         if (offset === 0) {
             postData = await Post.findByPk(id, {
                 include: [{ model: User }],
                 attributes: {
                     include: [
-                        // COUNT des replies
                         [
                             sequelize.literal(`
                                 (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
@@ -46,7 +45,6 @@ export async function getPostWithReplies(req, res) {
                             "comments_count"
                         ],
 
-                        // COUNT des likes
                         [
                             sequelize.literal(`
                                 (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
@@ -54,13 +52,12 @@ export async function getPostWithReplies(req, res) {
                             "likes_count"
                         ],
 
-                        // Est-ce que l'utilisateur a liké ?
                         [
                             sequelize.literal(`
                                 (SELECT COUNT(*) FROM likes AS l
-                                WHERE l.post_id = Post.id AND l.user_id = ${user_id || 0})
+                                WHERE l.post_id = Post.id AND l.user_id = ${user_id})    
                             `),
-                            "isLiked"
+                            "isLiked"   ///laisser user_id || 0 le temps de faire la verification de connexion 
                         ]
                     ]
                 }
@@ -71,9 +68,6 @@ export async function getPostWithReplies(req, res) {
             }
         }
 
-        // -------------------------
-        // RÉCUPÉRATION DES REPLIES
-        // -------------------------
 
         const repliesData = await Post.findAll({
             where: { parent_id: id },
@@ -98,7 +92,7 @@ export async function getPostWithReplies(req, res) {
                     [
                         sequelize.literal(`
                             (SELECT COUNT(*) FROM likes AS l
-                            WHERE l.post_id = Post.id AND l.user_id = ${user_id || 0})
+                            WHERE l.post_id = Post.id AND l.user_id = ${user_id})
                         `),
                         "isLiked"
                     ]
