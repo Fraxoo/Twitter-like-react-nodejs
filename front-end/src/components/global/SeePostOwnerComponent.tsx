@@ -1,21 +1,7 @@
 import { useState } from "react";
+import PostStatsComponents from "./PostStatsComponents";
+import type { PostType } from "../../types/PostType";
 
-
-type PostType = {
-    id: number;
-    content: string;
-    image_url?: string | null;
-    createdAt: string;
-    commentCount: number;
-    isLiked: boolean;
-    likesCount: number;
-    user: {
-        id: number;
-        name: string;
-        lastname: string;
-        username: string;
-    };
-};
 
 export default function SeePostOwnerComponent({ post }: { post: PostType }) {
 
@@ -23,11 +9,7 @@ export default function SeePostOwnerComponent({ post }: { post: PostType }) {
     const [content, setContent] = useState<{ content: string }>({
         content: ""
     })
-    const [isLiked, setIsLiked] = useState(post.isLiked);
-
-    console.log(isLiked);
-    
-
+    // const [isLiked, setIsLiked] = useState(post.isLiked);
 
     async function handleCreateComment(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -56,47 +38,47 @@ export default function SeePostOwnerComponent({ post }: { post: PostType }) {
         }
     }
 
-    const handleRemoveLike = async () => {
-        try {
-            const res = await fetch(`http://localhost:8000/like/remove/${post.id}`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            })
+    // const handleRemoveLike = async () => {
+    //     try {
+    //         const res = await fetch(`http://localhost:8000/like/remove/${post.id}`, {
+    //             method: "POST",
+    //             credentials: "include",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //         })
 
-            if (!res.ok) {
-                setErrors({ global: "Erreur serveur" });
-                return;
-            }
-            
-            setIsLiked(false)
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    //         if (!res.ok) {
+    //             setErrors({ global: "Erreur serveur" });
+    //             return;
+    //         }
 
-    const handleAddLike = async () => {
-        try {
-            const res = await fetch(`http://localhost:8000/like/add/${post.id}`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            })
+    //         setIsLiked(false)
+    //     } catch (err) {
+    //         console.error(err)
+    //     }
+    // }
 
-            if (!res.ok) {
-                setErrors({ global: "Erreur serveur" });
-                return;
-            }
+    // const handleAddLike = async () => {
+    //     try {
+    //         const res = await fetch(`http://localhost:8000/like/add/${post.id}`, {
+    //             method: "POST",
+    //             credentials: "include",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //         })
 
-            setIsLiked(true)
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    //         if (!res.ok) {
+    //             setErrors({ global: "Erreur serveur" });
+    //             return;
+    //         }
+
+    //         setIsLiked(true)
+    //     } catch (err) {
+    //         console.error(err)
+    //     }
+    // }
 
     return (
         <div className="see-post-owner-card">
@@ -115,7 +97,7 @@ export default function SeePostOwnerComponent({ post }: { post: PostType }) {
 
             </div>
 
-            <div className="see-post-owner-card-stats">
+            {/* <div className="see-post-owner-card-stats">
                 <div className="see-post-owner-card-stats-comment">
                     <button title="comment" ><i className="fa-regular fa-comment"></i></button>
                     <p>{post.commentCount}</p>
@@ -123,6 +105,10 @@ export default function SeePostOwnerComponent({ post }: { post: PostType }) {
                 <div className="see-post-owner-card-stats-like">
                     {isLiked ? <i onClick={handleRemoveLike} className="fa-solid liked fa-heart"></i> : <i onClick={handleAddLike} className="fa-regular fa-heart"></i>}
                 </div>
+            </div> */}
+            <div className="see-post-owner-card-stats">
+
+                <PostStatsComponents post={post} />
             </div>
 
             <div className="see-post-owner-card-respond">

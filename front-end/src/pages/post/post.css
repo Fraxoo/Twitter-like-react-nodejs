@@ -73,8 +73,13 @@ button {
     width: 100%;
 }
 
-.see-post-owner-card-stats-comment,
-.post-card-function-comment {
+.post-stats{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.post-stats-comment{
     display: flex;
     align-items: center;
     gap: 6px;
@@ -86,29 +91,23 @@ button {
     border-radius: 1rem;
 }
 
-.see-post-owner-card-stats-comment p,
-.see-post-owner-card-stats-comment i,
-.post-card-function-comment p,
-.post-card-function-comment i {
+.post-stats p,
+.post-stats i{
     color: rgb(255, 255, 255, 0.5);
 }
 
-.see-post-owner-card-stats-comment button,
-.post-card-function-comment button {
+.post-stats button {
     background: none;
     border: none;
 }
 
 /* Hover : fond léger + change couleur icône et texte */
-* .see-post-owner-card-stats-comment:hover,
-.post-card-function-comment:hover {
+.posts-stats:hover {
     background: rgba(29, 155, 240, 0.1);
 }
 
-.see-post-owner-card-stats-comment:hover p,
-.see-post-owner-card-stats-comment:hover i,
-.post-card-function-comment:hover i,
-.post-card-function-comment:hover p {
+.post-stats-comment:hover p,
+.post-stats-comment:hover i {
     color: rgb(29, 155, 240);
 }
 
@@ -147,8 +146,6 @@ button {
 .see-post-owner-card-stats {
     border-top: 1px rgb(128, 128, 128, 0.3) solid;
     border-bottom: 1px rgb(128, 128, 128, 0.3) solid;
-
-    display: flex;
 }
 
 .see-post-owner-card-respond form {

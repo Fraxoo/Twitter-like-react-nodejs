@@ -7,23 +7,10 @@ import "./post.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import PostCommentComponent from "../../components/global/PostCommentComponent";
 import { useNavigate } from "react-router";
+import type { PostType } from "../../types/PostType";
 
 
-type PostType = {
-    id: number;
-    content: string;
-    image_url?: string | null;
-    createdAt: string;
-    commentCount: number;
-    isLiked: boolean;
-    likesCount: number;
-    user: {
-        id: number;
-        name: string;
-        lastname: string;
-        username: string;
-    };
-};
+
 
 
 export default function SeePost() {

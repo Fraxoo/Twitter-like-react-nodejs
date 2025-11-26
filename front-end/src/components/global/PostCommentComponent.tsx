@@ -1,20 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import CommentModal from "../../ui/modal/CommentModal";
+import PostStatsComponents from "./PostStatsComponents";
+import type { PostType } from "../../types/PostType";
 
-type PostType = {
-    id: number;
-    content: string;
-    image_url?: string | null;
-    createdAt: string;
-    commentCount: number;
-    user: {
-        id: number;
-        name: string;
-        lastname: string;
-        username: string;
-    };
-};
 
 
 export default function PostCommentComponent({ post }: { post: PostType }) {
@@ -63,10 +52,9 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
                     </Link>
                 </div>
                 <div className="post-card-function">
-                    <div className="post-card-function-comment" onClick={() => setShowCommentModal(true)}>
-                        <button title="comment" ><i className="fa-regular fa-comment"></i></button>
-                        {post && <p>{post.commentCount}</p>}
-                    </div>
+                        <PostStatsComponents post={post}/>
+                    {/* <div className="post-card-function-comment" onClick={() => setShowCommentModal(true)}>
+                    </div> */}
                 </div>
             </div >
 
