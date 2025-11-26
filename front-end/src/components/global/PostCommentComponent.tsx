@@ -53,8 +53,6 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
                 </div>
                 <div className="post-card-function">
                         <PostStatsComponents post={post}/>
-                    {/* <div className="post-card-function-comment" onClick={() => setShowCommentModal(true)}>
-                    </div> */}
                 </div>
             </div >
 

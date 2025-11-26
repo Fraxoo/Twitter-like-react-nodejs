@@ -1,27 +1,12 @@
 import { useState } from "react";
-
-
-
-type PostType = {
-    id: number;
-    content: string;
-    image_url?: string | null;
-    createdAt: string;
-    commentCount: number;
-    isLiked: boolean;
-    likesCount: number;
-    user: {
-        id: number;
-        name: string;
-        lastname: string;
-        username: string;
-    };
-};
+import type { PostType } from "../../types/PostType";
 
 export default function PostStatsComponents({ post }: { post: PostType }) {
     const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
     const [isLiked, setIsLiked] = useState(post.isLiked);
+    const [likesCount,setLikesCount] = useState(post.likesCount);
+
     const handleRemoveLike = async () => {
         try {
             const res = await fetch(`http://localhost:8000/like/remove/${post.id}`, {
@@ -36,7 +21,7 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
                 setErrors({ global: "Erreur serveur" });
                 return;
             }
-
+            setLikesCount(likesCount-1)
             setIsLiked(false)
         } catch (err) {
             console.error(err)
@@ -57,14 +42,15 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
                 setErrors({ global: "Erreur serveur" });
                 return;
             }
-
+            setLikesCount(likesCount+1)
             setIsLiked(true)
         } catch (err) {
             console.error(err)
         }
     }
 
-
+    console.log(errors); //temporaire // 
+    
 
     return (
 
@@ -74,11 +60,9 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
                 <p>{post.commentCount}</p>
             </div>
             <div onClick={isLiked ? handleRemoveLike : handleAddLike} className={`post-stats-like ${isLiked ? "liked" : "not-liked"}`}>
-                <i className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"}/>
-                <p>{post.likesCount}</p>
+                <i className={isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart"} />
+                <p>{likesCount}</p>
             </div>
-
-
 
         </div>
     )
