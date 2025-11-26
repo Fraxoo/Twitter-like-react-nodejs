@@ -5,6 +5,7 @@ import express from "express";
 import { sequelize, testDBConnection } from "./config/database.mjs";
 import userRoutes from "./routes/userRoutes.mjs"
 import postRoutes from "./routes/postRoutes.mjs"
+import likeRoutes from "./routes/likeRoutes.mjs"
 // import commentRoutes from "./routes/commentRoutes.mjs";
 
 
@@ -24,6 +25,7 @@ app.use(cors({
 app.use("/users",userRoutes);
 app.use("/post",postRoutes)
 // app.use("/comment",commentRoutes)
+app.use("/like",likeRoutes)
 
 
 async function main() {
