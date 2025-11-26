@@ -21,6 +21,7 @@ export const User = sequelize.define("User", {
     username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             len: { args: [4,20], msg: "4 a 20 caractéres."}
         }
