@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import CreatePost from "./pages/post/AddPost";
 import SeePost from "./pages/post/SeePost";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
+import SeeProfil from "./pages/profil/SeeProfil";
 
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
                     <Route path="/home" element={<Home />} />
                     <Route path="/post/:id" element={<SeePost />} />
                     <Route path="/post/add" element={<CreatePost />} />
+                    <Route path="/profil/:id" element={<SeeProfil/>} />
                 </Route>
 
                 <Route path="/register" element={<Register />} />
