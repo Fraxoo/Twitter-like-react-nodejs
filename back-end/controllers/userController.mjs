@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "../models/UserModel.mjs";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import { Post } from "../models/PostModel.mjs";
+import { sequelize } from "../config/database.mjs";
 
 dotenv.config();
 
@@ -27,11 +29,29 @@ function catchError(res, err) {
 
 export async function getAllPostWithLimitByUser(req, res) {
     try {
-        const offset = Number(req.params.offset);
-        const user_id = req.user?.id;
+        const offset = Number(req.params.offset) || 0;
+        const profileUserId = Number(req.params.id);      
+        const currentUserId = Number(req.user?.id);       
+
+        const user = await User.findByPk(profileUserId, {
+            attributes: [
+                "id",
+                "name",
+                "lastname",
+                "username",
+                "bio",
+                "avatar_url",
+                "followers_count",
+                "following_count"
+            ]
+        });
+
+        if (!user) {
+            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
+        }
 
         const postsData = await Post.findAll({
-            where: { parent_id: null, user_id: req.params.id },
+            where: { parent_id: null, user_id: profileUserId },
             include: [{ model: User }],
             offset,
             limit: 10,
@@ -53,17 +73,13 @@ export async function getAllPostWithLimitByUser(req, res) {
                     [
                         sequelize.literal(`
                             (SELECT COUNT(*) FROM likes AS l
-                             WHERE l.post_id = Post.id AND l.user_id = ${user_id})
+                             WHERE l.post_id = Post.id AND l.user_id = ${currentUserId})
                         `),
                         "isLiked"
                     ]
                 ]
             }
         });
-
-        if (!postsData || postsData.length === 0) {
-            return res.status(200).json([]);
-        }
 
         const posts = postsData.map(postData => ({
             id: postData.id,
@@ -82,7 +98,11 @@ export async function getAllPostWithLimitByUser(req, res) {
             }
         }));
 
-        return res.status(200).json(posts);
+        return res.status(200).json({
+            user,               
+            posts,              
+            hasMore: posts.length === 10
+        });
 
     } catch (err) {
         return catchError(res, err);
@@ -90,6 +110,32 @@ export async function getAllPostWithLimitByUser(req, res) {
 }
 
 
+export async function getUserByID(req, res) {
+    try {
+        const user_id = Number(req.params.id);
+
+        const user = await User.findByPk(user_id)
+
+        if (!user) {
+            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
+        }
+
+        const data = {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+            username: user.username,
+            bio: user.bio,
+            avatar_url: user.avatar_url,
+            followers_count: user.followers_count,
+            following_count: user.following_count
+        }
+
+        return res.json(data);
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
 
 
 export async function getProfil(req, res) {
@@ -109,12 +155,15 @@ export async function getProfil(req, res) {
             followers_count: req.user.followers_count,
             following_count: req.user.following_count
         }
-        
+
         return res.json(data);
     } catch (err) {
         return catchError(res, err);
     }
 }
+
+
+
 
 export async function getUsers(req, res) {
     try {
@@ -125,17 +174,6 @@ export async function getUsers(req, res) {
     }
 }
 
-export async function getUserByID(req, res) {
-    try {
-        const user = await User.findByPk(req.params.id);
-        if (!user) {
-            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
-        }
-        return res.json(user);
-    } catch (err) {
-        return catchError(res, err);
-    }
-}
 
 export async function register(req, res) {
     try {
@@ -210,10 +248,10 @@ export async function login(req, res) {
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.cookie("token", token, {
-             httpOnly: true,
-             secure: false,
-             sameSite: "lax"
-             });
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        });
         res.json(data);
     } catch (err) {
         return catchError(res, err)
@@ -299,12 +337,12 @@ export async function deleteUser(req, res) {
     }
 }
 
-export async function logout(req,res) {
-    res.clearCookie("token",{
+export async function logout(req, res) {
+    res.clearCookie("token", {
         httpOnly: true,
         secure: false,
         sameSite: "lax"
     });
 
-    return res.json({message: "Déconnecté"})
+    return res.json({ message: "Déconnecté" })
 }
