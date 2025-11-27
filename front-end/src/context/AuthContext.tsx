@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 
 type User = {
@@ -19,8 +20,12 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+
+  const navigate = useNavigate();
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     async function loadUser() {
@@ -46,6 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     loadUser();
   }, []);
+
+
 
   async function logout() {
     await fetch("http://localhost:8000/users/logout", {

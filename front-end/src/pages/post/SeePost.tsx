@@ -6,15 +6,14 @@ import SeePostOwnerComponent from "../../components/global/SeePostOwnerComponent
 import "./post.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import PostCommentComponent from "../../components/global/PostCommentComponent";
-import { useNavigate } from "react-router";
 import type { PostType } from "../../types/PostType";
+import GoBackComponenet from "../../components/global/GoBackComponenet";
 
 
 
 
 
 export default function SeePost() {
-    const navigate = useNavigate();
 
 
     const [post, setPost] = useState<PostType>();
@@ -107,19 +106,14 @@ export default function SeePost() {
         setOffset(prev => prev + 10);
     }
 
-    function goBack() {
-        navigate(-1)
-    }
-
+    
 
     return (
         <div className="content">
             <Header />
             <main id="scrollable">
                 <div className="go-back">
-                    <div className="go-back-button" onClick={goBack}>
-                        <i className="fa-solid fa-arrow-left"></i>
-                    </div>
+                    <GoBackComponenet/>
                     <h2>Post</h2>
                 </div>
                 {post && <SeePostOwnerComponent post={post} />}

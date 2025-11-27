@@ -44,7 +44,7 @@ export default function Header() {
                             <h1>Messages</h1>
                         </div>
                     </Link>
-                    <Link to={"/profil/:id"}>
+                    <Link to={`/profil/${user && user.id}`}>
                         <div className="header-list">
                             <i className="fa-regular fa-user"></i>
                             <h1>Profil</h1>
