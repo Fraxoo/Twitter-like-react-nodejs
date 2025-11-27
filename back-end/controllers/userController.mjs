@@ -25,6 +25,72 @@ function catchError(res, err) {
 
 
 
+export async function getAllPostWithLimitByUser(req, res) {
+    try {
+        const offset = Number(req.params.offset);
+        const user_id = req.user?.id;
+
+        const postsData = await Post.findAll({
+            where: { parent_id: null, user_id: req.params.id },
+            include: [{ model: User }],
+            offset,
+            limit: 10,
+            order: [["updatedAt", "DESC"]],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                        `),
+                        "comments_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                        `),
+                        "likes_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l
+                             WHERE l.post_id = Post.id AND l.user_id = ${user_id})
+                        `),
+                        "isLiked"
+                    ]
+                ]
+            }
+        });
+
+        if (!postsData || postsData.length === 0) {
+            return res.status(200).json([]);
+        }
+
+        const posts = postsData.map(postData => ({
+            id: postData.id,
+            content: postData.content,
+            image_url: postData.image_url,
+            createdAt: postData.createdAt,
+            updatedAt: postData.updatedAt,
+            commentCount: postData.dataValues.comments_count,
+            likesCount: postData.dataValues.likes_count,
+            isLiked: !!postData.dataValues.isLiked,
+            user: {
+                id: postData.User.id,
+                name: postData.User.name,
+                lastname: postData.User.lastname,
+                username: postData.User.username
+            }
+        }));
+
+        return res.status(200).json(posts);
+
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
+
+
+
 
 export async function getProfil(req, res) {
     try {

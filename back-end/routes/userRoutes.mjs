@@ -9,7 +9,8 @@ import {
     login,
     updateUser,
     deleteUser,
-    logout
+    logout,
+    getAllPostWithLimitByUser
 } from "../controllers/userController.mjs";
 import { isLoggedInJWT } from "../middleware/IsLoggedInJWT.mjs";
 
@@ -23,6 +24,7 @@ routeur.post("/logout",logout);
 
 
 //SECURE PATH
+routeur.get("/profil/:id/posts/",isLoggedInJWT(),getAllPostWithLimitByUser)
 routeur.put("/update", isLoggedInJWT(), updateUser);
 routeur.delete("/delete", isLoggedInJWT(), deleteUser);
 
