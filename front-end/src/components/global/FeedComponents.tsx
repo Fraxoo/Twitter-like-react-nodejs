@@ -60,6 +60,8 @@ export default function Feed() {
 
             >
                 {posts.map((post) => {
+                    console.log(post);
+                    
                     return <PostCommentComponent key={post.id} post={post} />
                 })}
             </InfiniteScroll> 

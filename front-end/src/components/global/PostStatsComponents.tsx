@@ -28,6 +28,8 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
         }
     }
 
+    
+
     const handleAddLike = async () => {
         try {
             const res = await fetch(`http://localhost:8000/like/add/${post.id}`, {
@@ -49,8 +51,6 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
         }
     }
 
-    console.log(errors); //temporaire // 
-    
 
     return (
 
