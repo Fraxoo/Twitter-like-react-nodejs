@@ -2,14 +2,16 @@ import type { UserType } from "../../types/UserType"
 import GoBackComponenet from "../global/GoBackComponenet"
 
 
-export default function ProfilInfo({userPage} : {userPage:UserType}){
+export default function ProfilInfo({ userPage }: { userPage: UserType }) {
 
+    console.log(userPage);
+    
 
-    return(
+    return (
         <div>
-            <div>
-                <GoBackComponenet/>
-                                <h1>{userPage.name} {userPage.lastname}</h1>
+            <div className="go-back">
+                <GoBackComponenet />
+                <h1>{userPage.name} {userPage.lastname}</h1>
 
             </div>
             <div className="profil-info-name">

@@ -56,7 +56,7 @@ export default function SeeProfil() {
 		<div className="content">
 			<Header />
 			<main id="scrollable">
-				<ProfilInfo userPage={userPage} />
+				{userPage && <ProfilInfo userPage={userPage} />}
 				<ProfilPost posts={posts} loadNext={loadNext} hasMore={hasMore} />
 			</main>
 			<div className="filter">
