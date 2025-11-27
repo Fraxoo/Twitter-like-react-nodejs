@@ -2,7 +2,6 @@ import { isLoggedInJWT } from "../middleware/IsLoggedInJWT.mjs";
 import express from "express"
 
 import {
-    getAllPost,
     getPostWithReplies,
     createPost,
     createCommentPost,
@@ -13,7 +12,6 @@ import {
 
 const routeur = express.Router();
 
-routeur.get("/get/all", isLoggedInJWT(),getAllPost);
 routeur.get("/get/all/:offset", isLoggedInJWT(),getAllPostWithLimit)
 routeur.get("/get/:id/:offset", isLoggedInJWT(),getPostWithReplies);
 

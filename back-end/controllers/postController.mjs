@@ -27,10 +27,10 @@ function catchError(res, err) {
 export async function getPostWithReplies(req, res) {
     try {
         console.log(req.user);
-        
+
         const id = Number(req.params.id);
         const offset = Number(req.params.offset) || 0;
-        const user_id = Number(req.user.id) ;
+        const user_id = Number(req.user.id);
         let postData = null;
 
         if (offset === 0) {
@@ -146,105 +146,70 @@ export async function getPostWithReplies(req, res) {
     }
 }
 
-
-
-export async function getAllPost(req, res) {
-    try {
-        const postsData = await Post.findAll({
-            include: [{ model: User }],
-            attributes: {
-                include: [
-                    [
-                        sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM post AS reply
-              WHERE reply.parent_id = Post.id
-            )`),
-                        "comments_count"
-                    ]
-                ],
-
-            },
-            order: [["updatedAt", "DESC"]],
-        });
-        if (!postsData || postsData.length === 0) {
-            return sendErrors(res, [{ field: "global", msg: "Aucun post pour le moment" }], 404); //pas faire ca voir function d'en dessous 
-        }
-
-        console.log(postsData);
-
-
-        const posts = postsData.map(post => ({
-            id: post.id,
-            content: post.content,
-            image_url: post.image_url,
-            createdAt: post.createdAt,
-            updatedAt: post.updatedAt,
-            commentCount: post.dataValues.comments_count,
-            user: {
-                id: post.User.id,
-                name: post.User.name,
-                lastname: post.User.lastname,
-                username: post.User.username
-            },
-
-        }));
-        console.log(posts)
-        return res.status(200).json(posts); //met 200 sur les get
-    } catch (err) {
-        return catchError(res, err)
-    }
-}
-
-
-
 export async function getAllPostWithLimit(req, res) {
     try {
         const offset = Number(req.params.offset);
+        const user_id = req.user?.id;
 
         const postsData = await Post.findAll({
             where: { parent_id: null },
             include: [{ model: User }],
-            offset: offset, limit: 10,
+            offset,
+            limit: 10,
+            order: [["updatedAt", "DESC"]],
             attributes: {
                 include: [
                     [
-                        sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM post AS reply
-              WHERE reply.parent_id = Post.id
-            )`),
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                        `),
                         "comments_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                        `),
+                        "likes_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l
+                             WHERE l.post_id = Post.id AND l.user_id = ${user_id})
+                        `),
+                        "isLiked"
                     ]
-                ],
-
-            },
-            order: [["updatedAt", "DESC"]],
+                ]
+            }
         });
+
         if (!postsData || postsData.length === 0) {
-            return res.status(200).json([]); // <-- Indique juste "plus de posts" sinon ca casse le infinite scroll
+            return res.status(200).json([]);
         }
 
-        const posts = postsData.map(post => ({
-            id: post.id,
-            content: post.content,
-            image_url: post.image_url,
-            createdAt: post.createdAt,
-            updatedAt: post.updatedAt,
-            commentCount: post.dataValues.comments_count,
+        const posts = postsData.map(postData => ({
+            id: postData.id,
+            content: postData.content,
+            image_url: postData.image_url,
+            createdAt: postData.createdAt,
+            updatedAt: postData.updatedAt,
+            commentCount: postData.dataValues.comments_count,
+            likesCount: postData.dataValues.likes_count,
+            isLiked: !!postData.dataValues.isLiked,
             user: {
-                id: post.User.id,
-                name: post.User.name,
-                lastname: post.User.lastname,
-                username: post.User.username
-            },
-
+                id: postData.User.id,
+                name: postData.User.name,
+                lastname: postData.User.lastname,
+                username: postData.User.username
+            }
         }));
+
         return res.status(200).json(posts);
+
     } catch (err) {
-        return catchError(res, err)
+        return catchError(res, err);
     }
 }
+
 
 // export async function getPostByID(req, res) {
 //     try {
