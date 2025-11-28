@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import type { PostType } from "../../types/PostType";
 import { useParams } from "react-router";
 import type { UserType } from "../../types/UserType";
+import ProfilFeedChoices from "../../components/profil/ProfilFeedChoices";
+
 
 export default function SeeProfil() {
 	const { id } = useParams();
@@ -57,6 +59,7 @@ export default function SeeProfil() {
 			<Header />
 			<main id="scrollable">
 				{userPage && <ProfilInfo userPage={userPage} />}
+				<ProfilFeedChoices/>
 				<ProfilPost posts={posts} loadNext={loadNext} hasMore={hasMore} />
 			</main>
 			<div className="filter">

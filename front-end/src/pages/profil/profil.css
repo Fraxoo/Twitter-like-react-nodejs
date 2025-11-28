@@ -1,0 +1,14 @@
+.profil-info {
+    margin: 0 1rem 1rem 1rem;
+}
+
+.profil-feed-choices {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+.profil-feed-choices p {
+    padding-bottom: 1rem;
+    border-bottom: 2px blue solid;
+}
