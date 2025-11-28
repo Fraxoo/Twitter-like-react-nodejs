@@ -29,7 +29,7 @@ export async function addLikeToPost(req, res) {
         const liked = await Like.findOne({ where: { user_id, post_id } });
 
         if (liked) {
-            return res.status(200).json({ liked: true, already: true });
+            return res.status(200).json({ liked: true });
         }
 
         const newLike = await Like.create({ user_id, post_id });
@@ -48,13 +48,19 @@ export async function removeLikeFromPost(req, res) {
         const user_id = req.user.id;
 
         if (!user_id || !post_id) {
-            return sendErrors(res, [{ field: "like", message: "Erreur veuillez réessayer" }], 400);
+            return sendErrors(res, [
+                { field: "like", message: "Erreur veuillez réessayer" }
+            ], 400);
         }
 
-        const removed = await Like.destroy({ where: { user_id, post_id } });
+        const removed = await Like.destroy({
+            where: { user_id, post_id }
+        });
 
         if (removed === 0) {
-            return res.status(200).json({ liked: false, already: false });
+            return sendErrors(res, [
+                { field: "like", message: "Post non liké, impossible d'annuler" }
+            ], 400);
         }
 
         return res.status(200).json({ liked: false });

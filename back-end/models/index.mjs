@@ -1,12 +1,35 @@
 import { User } from "./UserModel.mjs";
 import { Post } from "./PostModel.mjs";
 import { Like } from "./LikeModel.mjs";
+import { Follow } from "./Follow.mjs";
 
 
 
 User.hasMany(Post, {
     foreignKey: "user_id",
     onDelete: "CASCADE"
+});
+
+User.hasMany(Follow, {
+    as: "following",
+    foreignKey: "user_id",
+    onDelete: "CASCADE"
+});
+
+Follow.belongsTo(User, {
+    as: "follower",
+    foreignKey: "user_id"
+});
+
+User.hasMany(Follow, {
+    as: "followers",
+    foreignKey: "followed_id",
+    onDelete: "CASCADE"
+});
+
+Follow.belongsTo(User, {
+    as: "followed",
+    foreignKey: "followed_id"
 });
 
 User.hasMany(Like, { foreignKey: "user_id", onDelete: "CASCADE" });
@@ -37,4 +60,4 @@ Post.hasMany(Post, {
 
 
 
-export { User, Post }
+export { User, Post, Follow }

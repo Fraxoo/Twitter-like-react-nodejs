@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { User } from "../models/UserModel.mjs";
-import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { Post } from "../models/PostModel.mjs";
 import { sequelize } from "../config/database.mjs";
