@@ -18,48 +18,56 @@ export default function SeeProfil() {
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [offset, setOffset] = useState(0);
 	const [hasMore, setHasMore] = useState(true);
+	const [selectedFeed, setSelectedFeed] = useState("posts");
+
+
+	const fetchData = async () => {
+		try {
+			const res = await fetch(
+				`http://localhost:8000/users/profil/${id}/${selectedFeed}/${offset}`,
+				{
+					method: "GET",
+					headers: { "Content-Type": "application/json" },
+					credentials: "include",
+				}
+			);
+			const data = await res.json();
+			console.log(data);
+
+			if (!res.ok) {
+				setErrors({ global: "Erreur serveur" });
+				return;
+			}
+			setHasMore(data.hasMore)
+			setUserPage(data.user);
+			setPosts((prev) => [...prev, ...data.posts]);
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const res = await fetch(
-					`http://localhost:8000/users/profil/${id}/posts/${offset}`,
-					{
-						method: "GET",
-						headers: { "Content-Type": "application/json" },
-						credentials: "include",
-					}
-				);
-				const data = await res.json();
-				console.log(data);
-
-				if (!res.ok) {
-					setErrors({ global: "Erreur serveur" });
-					return;
-				}
-				if (data.length === 0) {
-					setHasMore(false);
-					return;
-				}
-				setUserPage(data.user);
-				setPosts((prev) => [...prev, ...data.posts]);
-			} catch (err) {
-				console.error(err);
-			}
-		};
 		fetchData();
-	}, [offset]);
+	}, [selectedFeed, offset]);
+
+	useEffect(() => {
+		setPosts([]);
+		setOffset(0);
+	}, [selectedFeed]);
 
 	function loadNext() {
 		setOffset((prev) => prev + 10); // se baser sur le offset par sur le chargement de page sinon doublon les key
 	}
+
+	console.log(errors);
+	
 
 	return (
 		<div className="content">
 			<Header />
 			<main id="scrollable">
 				{userPage && <ProfilInfo userPage={userPage} />}
-				<ProfilFeedChoices/>
+				<ProfilFeedChoices setSelectedFeed={setSelectedFeed} />
 				<ProfilPost posts={posts} loadNext={loadNext} hasMore={hasMore} />
 			</main>
 			<div className="filter">

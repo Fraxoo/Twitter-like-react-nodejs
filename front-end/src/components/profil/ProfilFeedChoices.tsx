@@ -1,16 +1,15 @@
 
 
-
-export default function ProfilFeedChoices(){
+export default function ProfilFeedChoices({setSelectedFeed}: { setSelectedFeed : (value: string) => void}){
 
 
 
     return(
         <div className="profil-feed-choices">
-            <p>Posts</p>
-            <p>Réponses</p>
-            <p>Média</p>
-            <p>J'aime</p>
+            <p onClick={() => setSelectedFeed("posts")}>Posts</p>
+            <p onClick={() => setSelectedFeed("responses")}>Réponses</p>
+            <p onClick={() => setSelectedFeed("media")}>Média</p>
+            <p onClick={() => setSelectedFeed("likes") }>J'aime</p>
         </div>
     )
 }
