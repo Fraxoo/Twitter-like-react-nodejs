@@ -19,9 +19,11 @@ export default function SeeProfil() {
 	const [offset, setOffset] = useState(0);
 	const [hasMore, setHasMore] = useState(true);
 	const [selectedFeed, setSelectedFeed] = useState("posts");
+	const [loading, setLoading] = useState(true);
 
 
 	const fetchData = async () => {
+		setLoading(true)
 		try {
 			const res = await fetch(
 				`http://localhost:8000/users/profil/${id}/${selectedFeed}/${offset}`,
@@ -43,16 +45,23 @@ export default function SeeProfil() {
 			setPosts((prev) => [...prev, ...data.posts]);
 		} catch (err) {
 			console.error(err);
+		} finally {
+			setLoading(false)
 		}
 	};
 
 	useEffect(() => {
+		if (posts.length === 0 && offset === 0) return;
+
 		fetchData();
-	}, [selectedFeed, offset]);
+	}, [offset]);
+
+
 
 	useEffect(() => {
 		setPosts([]);
 		setOffset(0);
+		fetchData();
 	}, [selectedFeed]);
 
 	function loadNext() {
@@ -60,7 +69,7 @@ export default function SeeProfil() {
 	}
 
 	console.log(errors);
-	
+
 
 	return (
 		<div className="content">
@@ -69,6 +78,7 @@ export default function SeeProfil() {
 				{userPage && <ProfilInfo userPage={userPage} />}
 				<ProfilFeedChoices selectedFeed={selectedFeed} setSelectedFeed={setSelectedFeed} />
 				<ProfilPost posts={posts} loadNext={loadNext} hasMore={hasMore} />
+				{loading && <Loading />}
 			</main>
 			<div className="filter">
 				<Loading />
