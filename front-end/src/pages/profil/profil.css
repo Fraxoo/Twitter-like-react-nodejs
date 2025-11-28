@@ -4,11 +4,33 @@
 
 .profil-feed-choices {
     display: flex;
-    justify-content: space-around;
     border-bottom: 1px solid rgba(128, 128, 128, 0.3);
 }
 
-.profil-feed-choices p {
-    padding-bottom: 1rem;
+.profil-feed-choices-selected {
     border-bottom: 3px rgb(96, 157, 255) solid;
+    color: white;
+    font-weight: bold;
+}
+
+.profil-feed-choices-not-selected{
+    color: gray;
+}
+
+.profil-feed-choices p {
+    padding: 1rem 0;
+    width: fit-content;
+}
+
+.profil-feed-choices-div {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+}
+
+.profil-feed-choices-div:hover {
+    background-color: rgb(128, 128, 128, 0.2);
 }

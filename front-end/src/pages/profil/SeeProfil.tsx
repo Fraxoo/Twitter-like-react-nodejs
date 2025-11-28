@@ -67,7 +67,7 @@ export default function SeeProfil() {
 			<Header />
 			<main id="scrollable">
 				{userPage && <ProfilInfo userPage={userPage} />}
-				<ProfilFeedChoices setSelectedFeed={setSelectedFeed} />
+				<ProfilFeedChoices selectedFeed={selectedFeed} setSelectedFeed={setSelectedFeed} />
 				<ProfilPost posts={posts} loadNext={loadNext} hasMore={hasMore} />
 			</main>
 			<div className="filter">
