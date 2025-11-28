@@ -64,15 +64,6 @@ export default function SeeProfil() {
 		fetchData();
 	}, [selectedFeed]);
 
-	useEffect(() => {
-		setUserPage(undefined);
-		setPosts([]);
-		setOffset(0);
-		setHasMore(true);
-		setErrors({});
-
-		fetchData();
-	}, [id]) //  quand tu change de page le composant ne change pas vraiment donc met ca 
 
 	function loadNext() {
 		setOffset((prev) => prev + 10); // se baser sur le offset par sur le chargement de page sinon doublon les key
