@@ -5,6 +5,9 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { Post } from "../models/PostModel.mjs";
 import { sequelize } from "../config/database.mjs";
+import { Op } from "sequelize";
+import { Like } from "../models/LikeModel.mjs";
+
 
 dotenv.config();
 
@@ -30,8 +33,8 @@ function catchError(res, err) {
 export async function getAllPostWithLimitByUser(req, res) {
     try {
         const offset = Number(req.params.offset) || 0;
-        const profileUserId = Number(req.params.id);      
-        const currentUserId = Number(req.user?.id);       
+        const profileUserId = Number(req.params.id);
+        const currentUserId = Number(req.user?.id);
 
         const user = await User.findByPk(profileUserId, {
             attributes: [
@@ -99,8 +102,263 @@ export async function getAllPostWithLimitByUser(req, res) {
         }));
 
         return res.status(200).json({
-            user,               
-            posts,              
+            user,
+            posts,
+            hasMore: posts.length === 10
+        });
+
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
+
+export async function getAllResponseByUser(req, res) {
+    try {
+        const offset = Number(req.params.offset) || 0;
+        const profileUserId = Number(req.params.id);
+        const currentUserId = Number(req.user?.id);
+
+        const user = await User.findByPk(profileUserId, {
+            attributes: [
+                "id",
+                "name",
+                "lastname",
+                "username",
+                "bio",
+                "avatar_url",
+                "followers_count",
+                "following_count"
+            ]
+        });
+
+        if (!user) {
+            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
+        }
+
+        const postsData = await Post.findAll({
+            where: {
+                parent_id: { [Op.ne]: null }, /// en gros where parent id n'est pas null voir la doc sequelize //oublie pas l'import 
+                user_id: profileUserId
+            }, include: [{ model: User }],
+            offset,
+            limit: 10,
+            order: [["updatedAt", "DESC"]],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                        `),
+                        "comments_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                        `),
+                        "likes_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l
+                             WHERE l.post_id = Post.id AND l.user_id = ${currentUserId})
+                        `),
+                        "isLiked"
+                    ]
+                ]
+            }
+        });
+
+        const posts = postsData.map(postData => ({
+            id: postData.id,
+            content: postData.content,
+            image_url: postData.image_url,
+            createdAt: postData.createdAt,
+            updatedAt: postData.updatedAt,
+            commentCount: postData.dataValues.comments_count,
+            likesCount: postData.dataValues.likes_count,
+            isLiked: !!postData.dataValues.isLiked,
+            user: {
+                id: postData.User.id,
+                name: postData.User.name,
+                lastname: postData.User.lastname,
+                username: postData.User.username
+            }
+        }));
+
+        return res.status(200).json({
+            user,
+            posts,
+            hasMore: posts.length === 10
+        });
+
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
+
+export async function getAllPostWithImageByUser(req, res) {
+    try {
+        const offset = Number(req.params.offset) || 0;
+        const profileUserId = Number(req.params.id);
+        const currentUserId = Number(req.user?.id);
+
+        const user = await User.findByPk(profileUserId, {
+            attributes: [
+                "id",
+                "name",
+                "lastname",
+                "username",
+                "bio",
+                "avatar_url",
+                "followers_count",
+                "following_count"
+            ]
+        });
+
+        if (!user) {
+            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
+        }
+
+        const postsData = await Post.findAll({
+            where: { parent_id: null, user_id: profileUserId },
+            include: [{ model: User }],
+            offset,
+            limit: 10,
+            order: [["updatedAt", "DESC"]],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                        `),
+                        "comments_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                        `),
+                        "likes_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                            (SELECT COUNT(*) FROM likes AS l
+                             WHERE l.post_id = Post.id AND l.user_id = ${currentUserId})
+                        `),
+                        "isLiked"
+                    ]
+                ]
+            }
+        });
+
+        const posts = postsData.map(postData => ({
+            id: postData.id,
+            content: postData.content,
+            image_url: postData.image_url,
+            createdAt: postData.createdAt,
+            updatedAt: postData.updatedAt,
+            commentCount: postData.dataValues.comments_count,
+            likesCount: postData.dataValues.likes_count,
+            isLiked: !!postData.dataValues.isLiked,
+            user: {
+                id: postData.User.id,
+                name: postData.User.name,
+                lastname: postData.User.lastname,
+                username: postData.User.username
+            }
+        }));
+
+        return res.status(200).json({
+            user,
+            posts,
+            hasMore: posts.length === 10
+        });
+
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
+
+
+export async function getAllPostLikedByUser(req, res) {
+    try {
+        const offset = Number(req.params.offset) || 0;
+        const profileUserId = Number(req.params.id);
+        const currentUserId = Number(req.user?.id);
+
+        const user = await User.findByPk(profileUserId, {
+            attributes: [
+                "id",
+                "name",
+                "lastname",
+                "username",
+                "bio",
+                "avatar_url",
+                "followers_count",
+                "following_count"
+            ]
+        });
+
+        if (!user) {
+            return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
+        }
+
+        const postsData = await Post.findAll({
+            include: [
+                {
+                    model: Like,
+                    where: { user_id: profileUserId }, 
+                    attributes: []                     
+                },
+                { model: User }                         
+            ],
+            offset,
+            limit: 10,
+            order: [["updatedAt", "DESC"]],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`
+                    (SELECT COUNT(*) FROM post AS reply WHERE reply.parent_id = Post.id)
+                `),
+                        "comments_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                    (SELECT COUNT(*) FROM likes AS l WHERE l.post_id = Post.id)
+                `),
+                        "likes_count"
+                    ],
+                    [
+                        sequelize.literal(`
+                    (SELECT COUNT(*) FROM likes AS l
+                     WHERE l.post_id = Post.id AND l.user_id = ${currentUserId})
+                `),
+                        "isLiked"
+                    ]
+                ]
+            }
+        });
+
+        const posts = postsData.map(postData => ({
+            id: postData.id,
+            content: postData.content,
+            image_url: postData.image_url,
+            createdAt: postData.createdAt,
+            updatedAt: postData.updatedAt,
+            commentCount: postData.dataValues.comments_count,
+            likesCount: postData.dataValues.likes_count,
+            isLiked: !!postData.dataValues.isLiked,
+            user: {
+                id: postData.User.id,
+                name: postData.User.name,
+                lastname: postData.User.lastname,
+                username: postData.User.username
+            }
+        }));
+
+        return res.status(200).json({
+            user,
+            posts,
             hasMore: posts.length === 10
         });
 

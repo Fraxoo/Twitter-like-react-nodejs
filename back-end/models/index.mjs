@@ -11,7 +11,6 @@ User.hasMany(Post, {
 
 User.hasMany(Like, { foreignKey: "user_id", onDelete: "CASCADE" });
 Post.hasMany(Like, { foreignKey: "post_id", onDelete: "CASCADE" });
-
 Like.belongsTo(User, { foreignKey: "user_id" });
 Like.belongsTo(Post, { foreignKey: "post_id" });
 
