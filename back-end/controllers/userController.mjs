@@ -40,7 +40,6 @@ export async function getAllPostWithLimitByUser(req, res) {
                 "lastname",
                 "username",
                 "bio",
-                "avatar_url",
                 "followers_count",
                 "following_count"
             ]
@@ -122,7 +121,6 @@ export async function getAllResponseByUser(req, res) {
                 "lastname",
                 "username",
                 "bio",
-                "avatar_url",
                 "followers_count",
                 "following_count"
             ]
@@ -207,7 +205,6 @@ export async function getAllPostWithImageByUser(req, res) {
                 "lastname",
                 "username",
                 "bio",
-                "avatar_url",
                 "followers_count",
                 "following_count"
             ]
@@ -290,7 +287,6 @@ export async function getAllPostLikedByUser(req, res) {
                 "lastname",
                 "username",
                 "bio",
-                "avatar_url",
                 "followers_count",
                 "following_count"
             ]
@@ -382,7 +378,6 @@ export async function getUserByID(req, res) {
             lastname: user.lastname,
             username: user.username,
             bio: user.bio,
-            avatar_url: user.avatar_url,
             followers_count: user.followers_count,
             following_count: user.following_count
         }
@@ -407,7 +402,6 @@ export async function getProfil(req, res) {
             lastname: req.user.lastname,
             username: req.user.username,
             bio: req.user.bio,
-            avatar_url: req.user.avatar_url,
             followers_count: req.user.followers_count,
             following_count: req.user.following_count
         }
@@ -496,7 +490,6 @@ export async function login(req, res) {
             lastname: user.lastname,
             username: user.username,
             bio: user.bio,
-            avatar_url: user.avatar_url,
             followers_count: user.followers_count,
             following_count: user.following_count
         }

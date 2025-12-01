@@ -33,7 +33,7 @@ async function main() {
     try {
         await testDBConnection();
         // await sequelize.sync({force: true});
-        // await sequelize.sync({alter: true,force:true});
+        // await sequelize.sync({alter: true});
         await sequelize.sync()
 
         app.listen(process.env.PORT, () => {

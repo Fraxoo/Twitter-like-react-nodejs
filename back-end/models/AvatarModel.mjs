@@ -2,20 +2,20 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.mjs";
 
 
-export const Media = sequelize.define("Media", {
-    filename: {
+export const Avatar = sequelize.define("Avatar", {
+    filname: {
         type: DataTypes.STRING,
         allowNull: false,
     },
     type: {
-        type: DataTypes.ENUM("image", "video"),
+        type: DataTypes.ENUM("image"),
         allowNull: false,
     },
-    post_id: {
+    user_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false
     }
-},{
-    tableName: "media",
-    timestamps: true,
+}, {
+    tableName: "avatar",
+    timestamps: true
 })

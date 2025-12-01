@@ -3,7 +3,8 @@ import { Post } from "./PostModel.mjs";
 import { Like } from "./LikeModel.mjs";
 import { Follow } from "./Follow.mjs";
 import { Media } from "./MediaModel.mjs";
-
+import { Banner } from "./BannerModel.mjs";
+import { Avatar } from "./AvatarModel.mjs";
 
 // ---------------------
 // USER → POSTS
@@ -86,6 +87,23 @@ Post.hasMany(Post, {
     constraints: false,
 });
 
+// AVATAR / BANNER
+User.hasOne(Avatar, {
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
+});
+Avatar.belongsTo(User, {
+    foreignKey: "user_id",
+});
+
+User.hasOne(Banner, {
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
+});
+Banner.belongsTo(User, {
+    foreignKey: "user_id",
+});
+
 
 // Export complet
-export { User, Post, Follow, Like, Media };
+export { User, Post, Follow, Like, Media, Avatar, Banner };

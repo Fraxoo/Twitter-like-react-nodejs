@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
-import { User, Post } from "../models/index.mjs";
+import { User, Post,Media } from "../models/index.mjs";
 import { sequelize } from "../config/database.mjs";
+
 dotenv.config();
 
 const JWT_SECRET = process.env.PRIVATE_JWT_KEY;
