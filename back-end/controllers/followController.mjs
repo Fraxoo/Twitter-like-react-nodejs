@@ -18,6 +18,26 @@ function catchError(res, err) {
 }
 
 
+export async function isFollowed(req,res) {
+    try{
+
+        const user_id = req.user.id;
+        const profileUserId = req.params.id;
+
+        const isFollowed = await Follow.findOne({
+            where: {
+                user_id: currentUserId,
+                followed_id: profileUserId
+            }
+        });
+
+        return res.status(200).json(!!isFollowed)
+    } catch(err){
+        return catchError(res,err)
+    }
+}
+
+
 export async function getAllFollowingByUser(req, res) {
     try {
         const offset = Number(req.params.offset) || 0;
@@ -46,8 +66,6 @@ export async function getAllFollowingByUser(req, res) {
         return catchError(res, err);
     }
 }
-
-
 
 
 export async function getAllFollowersByUser(req, res) {
