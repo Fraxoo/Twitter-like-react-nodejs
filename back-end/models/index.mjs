@@ -15,18 +15,16 @@ User.hasMany(Follow, {
     foreignKey: "user_id",
     onDelete: "CASCADE"
 });
-
-Follow.belongsTo(User, {
-    as: "follower",
-    foreignKey: "user_id"
-});
-
 User.hasMany(Follow, {
     as: "followers",
     foreignKey: "followed_id",
     onDelete: "CASCADE"
 });
 
+Follow.belongsTo(User, {
+    as: "follower",
+    foreignKey: "user_id"
+});
 Follow.belongsTo(User, {
     as: "followed",
     foreignKey: "followed_id"

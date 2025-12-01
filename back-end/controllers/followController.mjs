@@ -18,38 +18,60 @@ function catchError(res, err) {
 }
 
 
-
-export async function getAllFollowByUser(req, res) {
+export async function getAllFollowingByUser(req, res) {
     try {
-
         const offset = Number(req.params.offset) || 0;
         const profileUserId = Number(req.params.id);
-        const currentUserId = Number(req.user?.id);
 
-        const FollowerData = await User.findAll({
+        const data = await Follow.findAll({
+            where: { user_id: profileUserId }, 
             include: [
                 {
-                    model: Follow,
-                    where: { user_id: profileUserId },
-                    attributes: []
-                },
-                { model: User }
+                    model: User,
+                    as: "followed", 
+                    attributes: ["id", "name", "lastname", "username", "avatar_url"]
+                }
             ],
             offset,
             limit: 10,
-            order: [["updatedAt", "DESC"]],
-        })
+            order: [["createdAt", "DESC"]],
+        });
 
-        const followers = FollowerData.map(follower => ({
-            id: follower.id,
-            name: follower.name,
-            lastname: follower.lastname,
-            username: follower.username
-        }));
+        // retourne les users suivis
+        const following = data.map(follow => follow.followed);
 
-        return res.status(200).json({
-            followers
-        })
+        return res.status(200).json({ following });
+
+    } catch (err) {
+        return catchError(res, err);
+    }
+}
+
+
+
+
+export async function getAllFollowersByUser(req, res) {
+    try {
+        const offset = Number(req.params.offset) || 0;
+        const profileUserId = Number(req.params.id);
+
+        const data = await Follow.findAll({
+            where: { followed_id: profileUserId },
+            include: [
+                {
+                    model: User,
+                    as: "follower",
+                    attributes: ["id", "name", "lastname", "username", "avatar_url"]
+                }
+            ],
+            offset,
+            limit: 10,
+            order: [["createdAt", "DESC"]],
+        });
+
+        const followers = data.map(follow => follow.follower);
+
+        return res.status(200).json({ followers });
 
     } catch (err) {
         return catchError(res, err);
@@ -62,7 +84,7 @@ export async function addFollow(req, res) {
         const user_id = req.user.id;
         const followed_id = req.params.id;
 
-        if (!user_id || !follow_id) {
+        if (!user_id || !followed_id) {
             return sendErrors(res, [{ field: "global", message: "Erreur veuillez réessayer" }], 400);
         }
 
@@ -76,7 +98,7 @@ export async function addFollow(req, res) {
 
         return res.status(201).json({ followed: true, follow: newFollow })
     } catch (err) {
-        return catchError(req, err)
+        return catchError(res, err)
     }
 }
 

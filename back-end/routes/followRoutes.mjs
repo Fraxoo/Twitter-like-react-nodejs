@@ -1,5 +1,6 @@
 import {
-    getAllFollowByUser,
+    getAllFollowersByUser, //Test
+    getAllFollowingByUser,
     addFollow,
     removeFollow
 } from "../controllers/followController.mjs"
@@ -8,7 +9,8 @@ import express from "express"
 
 const routeur = express.Router();
 
-routeur.get("/get/:offset",isLoggedInJWT(),getAllFollowByUser)
+routeur.get("/get/:id/following/:offset",isLoggedInJWT(),getAllFollowingByUser)
+routeur.get("/get/:id/followers/:offset",isLoggedInJWT(),getAllFollowersByUser)
 routeur.post("/post/add/:id",isLoggedInJWT(),addFollow)
 routeur.post("/post/remove/:id",isLoggedInJWT(),removeFollow)
 

@@ -25,7 +25,6 @@ app.use(cors({
 
 app.use("/users",userRoutes);
 app.use("/post",postRoutes)
-// app.use("/comment",commentRoutes)
 app.use("/like",likeRoutes)
 app.use("/follow",followRoutes)
 
