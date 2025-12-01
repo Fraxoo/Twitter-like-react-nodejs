@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { User ,Post} from "../models/index.mjs";
+import { User, Post } from "../models/index.mjs";
 import { sequelize } from "../config/database.mjs";
 dotenv.config();
 
@@ -209,66 +209,55 @@ export async function getAllPostWithLimit(req, res) {
 }
 
 
-// export async function getPostByID(req, res) {
-//     try {
-//         const id = req.params.id;
-//         const post = await Post.findByPk(id, {
-//             include: [{ model: User }],
-//             attributes: {
 
-//             },
-//         });
-
-//         if (!post) {
-//             return sendErrors(res, [{ field: "global", message: "Post introuvable" }], 404);
-//         }
-
-//         const finalPost = {
-//             id: post.id,
-//             content: post.content,
-//             image_url: post.image_url,
-//             createdAt: post.createdAt,
-//             updatedAt: post.updatedAt,
-//             commentCount: post.dataValues.comments_count,
-//             user: {
-//                 id: post.User.id,
-//                 name: post.User.name,
-//                 lastname: post.User.lastname,
-//                 username: post.User.username
-//             }
-//         }
-
-
-//         return res.status(201).json(finalPost);
-//     } catch (err) {
-//         return catchError(res, err)
-//     }
-// }
 
 export async function createPost(req, res) {
     try {
-        // const { content, image_url } = req.body;
         const { content } = req.body;
 
+        // Vérification du texte
         if (!content || content.trim() === "") {
             return sendErrors(res, [{ field: "content", message: "Contenu requis" }], 400);
         }
 
+        // 1️⃣ Création du post
         const newPost = await Post.create({
             content: content.trim(),
-            image_url: null,
             parent_id: null,
             user_id: req.user.id
         });
 
-        return res.status(201).json(newPost)
+        // 2️⃣ Gestion des médias (0, 1 ou plusieurs)
+        if (req.files && req.files.length > 0) {
+            await Promise.all(
+                req.files.map((file) => {
+
+                    const isImage = file.mimetype.startsWith("image/");
+                    const isVideo = file.mimetype.startsWith("video/");
+
+                    return Media.create({
+                        post_id: newPost.id,  // 🔥 ID déjà créé !
+                        filename: file.filename,
+                        type: isImage ? "image" : isVideo ? "video" : "unknown",
+                    });
+                })
+            );
+        }
+
+        // 3️⃣ Retour du post
+        return res.status(201).json({
+            message: "Post créé avec succès",
+            post: newPost
+        });
+
     } catch (err) {
+        console.error(err);
         return catchError(res, err);
     }
 }
+
 export async function createCommentPost(req, res) {
     try {
-        // const { content, image_url } = req.body;
         const postId = req.params.postid;
         const { content } = req.body;
 
@@ -278,20 +267,36 @@ export async function createCommentPost(req, res) {
 
         const newPost = await Post.create({
             content: content.trim(),
-            image_url: null,
             parent_id: postId,
             user_id: req.user.id
         });
 
-        return res.status(201).json(newPost)
+        if (req.files && req.files.length > 0) {
+            await Promise.all(
+                req.files.map((file) => {
+                    const isImage = file.mimetype.startsWith("image/");
+                    const isVideo = file.mimetype.startsWith("video/");
+
+                    return Media.create({
+                        post_id: newPost.id,
+                        filename: file.filename,
+                        type: isImage ? "image" : isVideo ? "video" : "unknown",
+                    });
+                })
+            );
+        }
+
+        return res.status(201).json(newPost);
     } catch (err) {
         return catchError(res, err);
     }
 }
 
+
 export async function updatePost(req, res) {
     try {
-        const { id, content, image_url } = req.body;
+        const { content } = req.body;
+        const id = req.params.id;
 
         if (!content || content.trim() === "") {
             return sendErrors(res, [{ field: "content", message: "Contenu requis" }], 400);
@@ -303,30 +308,42 @@ export async function updatePost(req, res) {
             return sendErrors(res, [{ field: "global", message: "Post introuvable" }], 404);
         }
 
-        await post.update(
-            {
-                content: content.trim(),
-                image_url: image_url || null
-            },
-            {
-                where: { id }
-            })
+        await post.update({ content: content.trim() });
 
-        return res.status(200).json({ message: "Post mis a jour avec succès." })
+        if (req.files && req.files.length > 0) {
+            await Media.destroy({ where: { post_id: id } });
+
+            await Promise.all(
+                req.files.map((file) => {
+                    const isImage = file.mimetype.startsWith("image/");
+                    const isVideo = file.mimetype.startsWith("video/");
+
+                    return Media.create({
+                        post_id: id,
+                        filename: file.filename,
+                        type: isImage ? "image" : isVideo ? "video" : "unknown",
+                    });
+                })
+            );
+        }
+
+        return res.status(200).json({ message: "Post mis à jour avec succès." });
     } catch (err) {
-        return catchError(res, err)
+        return catchError(res, err);
     }
 }
 
+
 export async function deletePost(req, res) {
     try {
-        const { id } = req.body;
+        const id = req.params.id;
 
         if (!id) {
             return sendErrors(res, [{ field: "global", message: "Identifiant du post manquant." }], 400);
         }
 
         const post = await Post.findByPk(id);
+
         if (!post) {
             return sendErrors(res, [{ field: "global", message: "Post introuvable." }], 404);
         }
@@ -338,3 +355,4 @@ export async function deletePost(req, res) {
         return catchError(res, err);
     }
 }
+
