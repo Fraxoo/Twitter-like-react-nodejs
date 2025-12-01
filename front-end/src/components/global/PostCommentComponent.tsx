@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { Link } from "react-router";
-import CommentModal from "../../ui/modal/CommentModal";
 import PostStatsComponents from "./PostStatsComponents";
 import type { PostType } from "../../types/PostType";
 
@@ -8,35 +6,6 @@ import type { PostType } from "../../types/PostType";
 
 export default function PostCommentComponent({ post }: { post: PostType }) {
 
-    const [showCommentModal, setShowCommentModal] = useState(false);
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    
-
-
-    async function handleCreateComment(data: { content: string }) {
-        try {
-            const res = await fetch(`http://localhost:8000/post/create/${post.id}`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await res.json();
-            if (!res.ok) {
-                console.error(result);
-                return;
-            }
-
-            console.log("Commentaire créé :", result);
-
-        } catch (error) {
-            console.error("Erreur serveur:", error);
-            setErrors({ global: "Erreur veuillez réesayer" })
-        }
-    }
     return (
         <>
             <div className="post-card">
@@ -55,10 +24,6 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
                         <PostStatsComponents post={post}/>
                 </div>
             </div >
-
-            {showCommentModal && <CommentModal post={post} onSubmit={handleCreateComment} onClose={() => setShowCommentModal(false)} />}
-            {errors.global && <p>{errors.global}</p>}
-
         </>
     )
 }

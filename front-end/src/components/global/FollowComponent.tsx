@@ -41,14 +41,13 @@ export default function FollowComponent({ userId }: { userId: number }) {
                     credentials: "include",
                 });
 
-                const data = await res.json();
-                console.log(data);
+                const data = await res.json();                
 
                 if (!res.ok) {
                     console.error(res);
                     return;
                 }
-                setIsFollowed(false);
+                setIsFollowed(data.followed);
             } else {
                 const res = await fetch(`http://localhost:8000/follow/add/${userId}`, {
                     method: "POST",
@@ -56,13 +55,12 @@ export default function FollowComponent({ userId }: { userId: number }) {
                     credentials: "include",
                 });
                 const data = await res.json();
-                console.log(data);
-
+                
                 if (!res.ok) {
                     console.error(res);
                     return;
                 }
-                setIsFollowed(true);
+                setIsFollowed(data.followed);
             }
         } catch (err) {
             console.error(err)

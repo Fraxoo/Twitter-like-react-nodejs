@@ -59,9 +59,7 @@ export default function Feed() {
                 scrollableTarget="scrollable"
 
             >
-                {posts.map((post) => {
-                    console.log(post);
-                    
+                {posts.map((post) => {                    
                     return <PostCommentComponent key={post.id} post={post} />
                 })}
             </InfiniteScroll> 
