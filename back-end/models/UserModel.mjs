@@ -23,7 +23,7 @@ export const User = sequelize.define("User", {
         allowNull: false,
         unique: true,
         validate: {
-            len: { args: [4,20], msg: "4 a 20 caractéres."}
+            len: { args: [4, 20], msg: "4 a 20 caractéres." }
         }
     },
     email: {
@@ -42,9 +42,21 @@ export const User = sequelize.define("User", {
             len: { args: [6, 100], msg: "6 à 50 caractères." }
         }
     },
+    // Avatar du user
+    avatar: {
+        type: DataTypes.STRING,
+        allowNull: true, // null = avatar par défaut
+    },
+
+    // Bannière du user
+    banner: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+
+
     role: { type: DataTypes.STRING, defaultValue: "user" },
     bio: { type: DataTypes.STRING, allowNull: true },
-    avatar_url: { type: DataTypes.STRING, allowNull: true, defaultValue: "default-profil.jpg"},
     followers_count: { type: DataTypes.INTEGER, defaultValue: 0 },
     following_count: { type: DataTypes.INTEGER, defaultValue: 0 }
 }, {

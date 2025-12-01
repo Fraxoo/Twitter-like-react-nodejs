@@ -1,5 +1,4 @@
-import { where } from "sequelize";
-import { Like } from "../models/LikeModel.mjs";
+import { Like } from "../models/index.mjs";
 
 const sendErrors = (res, errors, status = 400) => {
     return res.status(status).json({ errors });

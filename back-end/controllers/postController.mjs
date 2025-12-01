@@ -1,7 +1,5 @@
-import { Like } from "../models/LikeModel.mjs";
-import { Post } from "../models/PostModel.mjs";
 import dotenv from "dotenv";
-import { User } from "../models/UserModel.mjs";
+import { User ,Post} from "../models/index.mjs";
 import { sequelize } from "../config/database.mjs";
 dotenv.config();
 

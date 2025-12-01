@@ -1,5 +1,5 @@
-import { Follow } from "../models/Follow.mjs";
-import { User } from "../models/UserModel.mjs";
+import { Follow } from "../models/index.mjs";
+
 
 
 const sendErrors = (res, errors, status = 400) => {

@@ -1,11 +1,9 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { User } from "../models/UserModel.mjs";
+import { User,Like,Post } from "../models/index.mjs";
 import dotenv from "dotenv";
-import { Post } from "../models/PostModel.mjs";
 import { sequelize } from "../config/database.mjs";
 import { Op } from "sequelize";
-import { Like } from "../models/LikeModel.mjs";
 
 
 dotenv.config();
