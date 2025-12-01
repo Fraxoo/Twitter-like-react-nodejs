@@ -34,3 +34,9 @@
 .profil-feed-choices-div:hover {
     background-color: rgb(128, 128, 128, 0.2);
 }
+
+.profil-info-top{
+    display: flex;
+    justify-content: space-between;
+}
+
