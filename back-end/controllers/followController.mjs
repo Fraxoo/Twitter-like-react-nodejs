@@ -26,7 +26,7 @@ export async function isFollowed(req,res) {
 
         const isFollowed = await Follow.findOne({
             where: {
-                user_id: currentUserId,
+                user_id: user_id,
                 followed_id: profileUserId
             }
         });
@@ -99,11 +99,15 @@ export async function getAllFollowersByUser(req, res) {
 
 export async function addFollow(req, res) {
     try {
-        const user_id = req.user.id;
-        const followed_id = req.params.id;
+        const user_id = Number(req.user.id);
+        const followed_id = Number(req.params.id);
 
         if (!user_id || !followed_id) {
             return sendErrors(res, [{ field: "global", message: "Erreur veuillez réessayer" }], 400);
+        }
+
+        if(user_id === followed_id){
+            return sendErrors(res,[{field: "global",message: "Impossible de se suivre sois meme"}])
         }
 
         const followed = await Follow.findOne({ where: { user_id, followed_id } })
@@ -122,7 +126,7 @@ export async function addFollow(req, res) {
 
 export async function removeFollow(req, res) {
     try {
-        const user_id = req.user.id;
+        const user_id = Number(req.user.id);
         const followed_id = Number(req.params.id);
 
         if (!user_id || !followed_id) {

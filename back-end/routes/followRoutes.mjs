@@ -13,8 +13,8 @@ const routeur = express.Router();
 routeur.get("/get/:id/isfollowed",isLoggedInJWT(),isFollowed)
 routeur.get("/get/:id/following/:offset",isLoggedInJWT(),getAllFollowingByUser)
 routeur.get("/get/:id/followers/:offset",isLoggedInJWT(),getAllFollowersByUser)
-routeur.post("/post/add/:id",isLoggedInJWT(),addFollow)
-routeur.post("/post/remove/:id",isLoggedInJWT(),removeFollow)
+routeur.post("/add/:id",isLoggedInJWT(),addFollow)
+routeur.post("/remove/:id",isLoggedInJWT(),removeFollow)
 
 
 export default routeur;
