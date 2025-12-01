@@ -6,7 +6,6 @@ import { Post } from "../models/PostModel.mjs";
 import { sequelize } from "../config/database.mjs";
 import { Op } from "sequelize";
 import { Like } from "../models/LikeModel.mjs";
-import { Follow } from "../models/Follow.mjs"
 
 
 dotenv.config();
@@ -52,14 +51,6 @@ export async function getAllPostWithLimitByUser(req, res) {
         if (!user) {
             return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
         }
-
-        const isFollowed = await Follow.findOne({
-            where: {
-                user_id: currentUserId,
-                followed_id: profileUserId
-            }
-        });
-
 
         const postsData = await Post.findAll({
             where: { parent_id: null, user_id: profileUserId },
@@ -112,7 +103,6 @@ export async function getAllPostWithLimitByUser(req, res) {
         return res.status(200).json({
             user,
             posts,
-            isFollowed: !!isFollowed,
             hasMore: posts.length === 10
         });
 
@@ -143,13 +133,6 @@ export async function getAllResponseByUser(req, res) {
         if (!user) {
             return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
         }
-
-        const isFollowed = await Follow.findOne({
-            where: {
-                user_id: currentUserId,
-                followed_id: profileUserId
-            }
-        });
 
 
         const postsData = await Post.findAll({
@@ -205,7 +188,6 @@ export async function getAllResponseByUser(req, res) {
         return res.status(200).json({
             user,
             posts,
-            isFollowed: !!isFollowed,
             hasMore: posts.length === 10
         });
 
@@ -236,14 +218,6 @@ export async function getAllPostWithImageByUser(req, res) {
         if (!user) {
             return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
         }
-
-        const isFollowed = await Follow.findOne({
-            where: {
-                user_id: currentUserId,
-                followed_id: profileUserId
-            }
-        });
-
 
         const postsData = await Post.findAll({
             where: { parent_id: null, user_id: profileUserId },
@@ -296,7 +270,6 @@ export async function getAllPostWithImageByUser(req, res) {
         return res.status(200).json({
             user,
             posts,
-            isFollowed: !!isFollowed,
             hasMore: posts.length === 10
         });
 
@@ -328,14 +301,6 @@ export async function getAllPostLikedByUser(req, res) {
         if (!user) {
             return sendErrors(res, [{ field: "global", message: "Utilisateur introuvable." }], 404);
         }
-
-        const isFollowed = await Follow.findOne({
-            where: {
-                user_id: currentUserId,
-                followed_id: profileUserId
-            }
-        });
-
 
         const postsData = await Post.findAll({
             include: [
@@ -394,7 +359,6 @@ export async function getAllPostLikedByUser(req, res) {
         return res.status(200).json({
             user,
             posts,
-            isFollowed: !!isFollowed,
             hasMore: posts.length === 10
         });
 
