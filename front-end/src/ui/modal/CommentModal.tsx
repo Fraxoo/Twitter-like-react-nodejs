@@ -97,27 +97,30 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                 <div onClick={onClose} className="close">
                     <i className="fa-solid fa-x"></i>
                 </div>
+                <div className="modal-content">
                 {post &&
 
                     <div className="modal-user">
-                        <div>
+                        <div className="modal-user-content">
                             <div className="flex gap-03">
                                 <p className="strong">{post.user.name} {post.user.lastname}</p>
                                 <p className="greyed">@{post.user.username}</p>
                             </div>
-                            {post.content}
+                            <p>{post.content}</p>
                         </div>
-                        <p>En réponse a <Link to={`/profil/${post.user.id}`}>@{post.user.username} </Link> </p>
+                        <p>En réponse a <Link className="modal-go-to-profil" to={`/profil/${post.user.id}`}>@{post.user.username} </Link> </p>
                     </div>
 
                 }
 
                 <textarea
                     className="tweet-input"
-                    placeholder="Quoi de neuf ?"
+                    placeholder={post ? "Postez votre réponse" : "Quoi de neuf ?"}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 ></textarea>
+
+                </div>
 
                 <div className="modal-bottom">
                     <input
@@ -129,8 +132,12 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                         onChange={handleFiles}
                         aria-label="Choisir des fichiers"
                     />
+
+                    
                     <label htmlFor="file-input">
-                        <i className="fa-regular fa-file"></i>
+                        <div className="modal-file-input">
+                            <i className="fa-regular fa-file"></i>
+                        </div>
                     </label>
 
                     <div className="modal-actions">
