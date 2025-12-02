@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { User, Post,Media } from "../models/index.mjs";
+import { User, Post, Media } from "../models/index.mjs";
 import { sequelize } from "../config/database.mjs";
 
 dotenv.config();
@@ -152,7 +152,7 @@ export async function getAllPostWithLimit(req, res) {
 
         const postsData = await Post.findAll({
             where: { parent_id: null },
-            include: [{ model: User }],
+            include: [{ model: User }, { model: Media }],
             offset,
             limit: 10,
             order: [["updatedAt", "DESC"]],
@@ -199,7 +199,12 @@ export async function getAllPostWithLimit(req, res) {
                 name: postData.User.name,
                 lastname: postData.User.lastname,
                 username: postData.User.username
-            }
+            },
+            medias: postData.Media.map(m => ({
+                id: m.id,
+                filename: m.filename,
+                type: m.type
+            }))
         }));
 
         return res.status(200).json(posts);

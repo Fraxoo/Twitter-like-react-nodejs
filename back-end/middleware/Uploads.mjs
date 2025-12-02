@@ -6,16 +6,21 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+const sanitize = (str) =>
+    str
+        .normalize("NFD")                   // transforme accents -> lettres + diacritiques
+        .replace(/[\u0300-\u036f]/g, "")    // supprime les diacritiques (é -> e)
+        .replace(/[^a-zA-Z0-9.\-_]/g, "_"); // remplace caractères spéciaux // important sinon bordel dans la sauvegarde d'image 
+
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../uploads"));
-    },
+    destination: "./uploads",
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const base = path.basename(file.originalname, ext);
-        cb(null, Date.now() + "-" + base + ext);
-    },
+        const timestamp = Date.now();
+        const cleanName = sanitize(file.originalname);
+        cb(null, `${timestamp}-${cleanName}`);
+    }
 });
+
 
 
 function fileFilter(req, file, cb) {
