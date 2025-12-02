@@ -2,6 +2,10 @@ import logo from "../../assets/images/logo-white.png";
 import { Link, useNavigate } from "react-router";
 import "./header.css"
 import { useAuth } from "../../context/AuthContext";
+import CommentModal from "../../ui/modal/CommentModal";
+import { useState } from "react";
+
+
 export default function Header() {
 
     const { logout, user } = useAuth();
@@ -12,6 +16,9 @@ export default function Header() {
         logout();
         navigate("/login")
     }
+
+    const [showCommentModal, setShowCommentModal] = useState(false);
+
 
     return (
         <header>
@@ -57,9 +64,16 @@ export default function Header() {
                         </div>
                     </Link>
                     <button onClick={handleLogout}>Deconnexion</button>
-                    <Link className="header-post" to={"/post/add"}>
-                        <p>Poster</p>
-                    </Link>
+
+
+                    <button onClick={() => { showCommentModal ? setShowCommentModal(false) : setShowCommentModal(true) }} className="header-post">Poster</button>
+
+                    {showCommentModal && (
+                        <CommentModal
+                            post={null}
+                            onClose={() => setShowCommentModal(false)}
+                        />
+                    )}
                 </div>
                 <div className="header-content-bottom">
                     <div>

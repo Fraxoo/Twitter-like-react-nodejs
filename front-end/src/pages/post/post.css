@@ -102,6 +102,9 @@ button {
     transition: background 0.2s ease;
     width: fit-content;
 }
+.post-stats-comment button{
+    cursor: pointer;
+}
 
 .post-stats-comment:hover{
     background-color: rgb(29, 155, 240, 0.2);
@@ -172,21 +175,3 @@ button {
 }
 
 
-/* ========== BOUTON RETOUR ========== */
-
-.go-back {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.go-back-button {
-    padding: 1rem;
-    margin-top: 0.2rem;
-    border-radius: 10rem;
-    cursor: pointer;
-}
-
-.go-back-button:hover {
-    background-color: rgba(128, 128, 128, 0.2);
-}

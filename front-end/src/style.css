@@ -79,3 +79,55 @@ main {
     color: rgba(250, 68, 68);
 
 }
+
+.strong {
+    font-weight: bold;
+}
+
+.greyed {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.flex {
+    display: flex;
+}
+
+.gap-03 {
+    gap: 0.3rem;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.hidden {
+    display: none;
+}
+
+.close {
+    padding: 0.5rem;
+    width: fit-content;
+    border-radius: 1rem;
+}
+
+.close:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+
+}
+
+.go-back {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.go-back-button {
+    padding: 1rem;
+    margin-top: 0.2rem;
+    border-radius: 10rem;
+    cursor: pointer;
+}
+
+.go-back-button:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+}

@@ -32,8 +32,8 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
         }
     }
 
-
-
+    console.log(errors);
+    
     const handleAddLike = async () => {
         try {
             const res = await fetch(`http://localhost:8000/like/add/${post.id}`, {
@@ -59,8 +59,8 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
     return (
         <>
             <div className="post-stats">
-                <div className="post-stats-comment">
-                    <button title="comment" onClick={() => setShowCommentModal(true)}>
+                <div className="post-stats-comment" onClick={() => {showCommentModal ? setShowCommentModal(false) : setShowCommentModal(true)}}>
+                    <button title="comment">
                         <i className="fa-regular fa-comment"></i>
                     </button>
                     <p>{post.commentCount}</p>

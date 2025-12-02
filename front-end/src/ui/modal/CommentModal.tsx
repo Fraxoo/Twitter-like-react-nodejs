@@ -1,4 +1,6 @@
 import { useState } from "react";
+import "./modal.css"
+import { Link } from "react-router";
 
 type UserType = {
     id: number;
@@ -15,7 +17,7 @@ type PostType = {
 };
 
 type CommentModalProps = {
-    post: PostType;
+    post: PostType | null;
     onClose: () => void;
 };
 
@@ -41,29 +43,35 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
         formData.append("content", content.trim());
 
         files.forEach((file) => {
-            formData.append("medias", file); // doit matcher uploadManyMedias
+            formData.append("medias", file);
         });
 
         try {
             setLoading(true);
             setError(null);
 
-            const res = await fetch(`http://localhost:8000/post/create/${post.id}`, {
+
+            const url = post
+                ? `http://localhost:8000/post/create/${post.id}`
+                : `http://localhost:8000/post/create`;
+
+            const res = await fetch(url, {
                 method: "POST",
                 credentials: "include",
                 body: formData,
             });
 
+
             const data = await res.json();
             console.log(data);
             console.log(res);
-            
+
 
             if (!res.ok) {
                 setError(data?.error || "Erreur lors de l'envoi du commentaire.");
                 console.log(error);
                 console.log(res);
-                
+
 
                 return;
             }
@@ -80,26 +88,61 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
         }
     }
 
+
+
+
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-window" onClick={(e) => e.stopPropagation()}>
+                <div onClick={onClose} className="close">
+                    <i className="fa-solid fa-x"></i>
+                </div>
+                {post &&
 
-                <h3>Répondre à @{post.user.username}</h3>
+                    <div className="modal-user">
+                        <div>
+                            <div className="flex gap-03">
+                                <p className="strong">{post.user.name} {post.user.lastname}</p>
+                                <p className="greyed">@{post.user.username}</p>
+                            </div>
+                            {post.content}
+                        </div>
+                        <p>En réponse a <Link to={`/profil/${post.user.id}`}>@{post.user.username} </Link> </p>
+                    </div>
 
-                <input
-                    type="text"
+                }
+
+                <textarea
+                    className="tweet-input"
+                    placeholder="Quoi de neuf ?"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Votre commentaire..."
-                />
+                ></textarea>
 
-                <input
-                    placeholder="parcourir"
-                    type="file"
-                    multiple
-                    accept="image/*,video/*"
-                    onChange={handleFiles}
-                />
+                <div className="modal-bottom">
+                    <input
+                        className="hidden"
+                        id="file-input"
+                        type="file"
+                        multiple
+                        accept="image/*,video/*"
+                        onChange={handleFiles}
+                        aria-label="Choisir des fichiers"
+                    />
+                    <label htmlFor="file-input">
+                        <i className="fa-regular fa-file"></i>
+                    </label>
+
+                    <div className="modal-actions">
+                        <button
+                            className={content.length > 0 ? "modal-actions-submit-on" : "modal-actions-submit-off"}
+                            onClick={content.length > 0 ? handleSend : undefined}
+                            disabled={loading || content.length === 0}
+                        >
+                            {loading ? "Envoi..." : post ? "Commenter" : "Poster"}
+                        </button>
+                    </div>
+                </div>
 
                 {files.length > 0 && (
                     <ul className="file-preview">
@@ -111,12 +154,6 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
 
                 {error && <p className="error">{error}</p>}
 
-                <div className="modal-actions">
-                    <button onClick={onClose}>Annuler</button>
-                    <button onClick={handleSend} disabled={loading}>
-                        {loading ? "Envoi..." : "Commenter"}
-                    </button>
-                </div>
 
             </div>
         </div>
