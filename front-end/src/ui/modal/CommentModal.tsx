@@ -28,6 +28,9 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    console.log(files);
+    
+
     function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return;
         setFiles(Array.from(e.target.files));

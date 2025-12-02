@@ -1,7 +1,8 @@
 import { Link } from "react-router";
 import PostStatsComponents from "./PostStatsComponents";
 import type { PostType } from "../../types/PostType";
-
+import ImageDisplay from "./ImageDisplayComponent";
+import type { MediaType } from "../../types/MediaType";
 
 
 export default function PostCommentComponent({ post }: { post: PostType }) {
@@ -16,12 +17,17 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
                             {post && <p className="post-card-content-user-greyed">@{post.user.username}</p>}
                         </Link>
                     </div>
-                    <Link  to={`/post/${post.id}`}>
-                        {post && <p>{post.content}</p>}
-                    </Link>
+                    <div>
+                        <div>
+                            <Link to={`/post/${post.id}`}>
+                                {post && <p>{post.content}</p>}
+                            </Link>
+                        </div>
+                        {post.medias.length > 0 && <ImageDisplay medias={post.medias}/>}
+                    </div>
                 </div>
                 <div className="post-card-function">
-                        <PostStatsComponents post={post}/>
+                    <PostStatsComponents post={post} />
                 </div>
             </div >
         </>

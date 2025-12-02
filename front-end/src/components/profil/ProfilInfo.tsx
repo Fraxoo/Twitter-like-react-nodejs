@@ -5,8 +5,6 @@ import FollowComponent from "../global/FollowComponent";
 
 export default function ProfilInfo({ userPage }: { userPage: UserType }) {
 
-    console.log(userPage);
-
 
     return (
         <>

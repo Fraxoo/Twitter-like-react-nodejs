@@ -10,6 +10,8 @@ export default function Feed() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    console.log(posts);
+    
 
     useEffect(() => {
         const fetchData = async () => {

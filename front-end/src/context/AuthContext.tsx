@@ -34,14 +34,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           credentials: "include",
         });
 
-        console.log(res);
         if (res.ok) {
           const data = await res.json();
 
           setUser(data);
         } else {
           const data = await res.json();
-          console.log(data);
         }
       } catch (err) {
         console.error("Erreur /me :", err);

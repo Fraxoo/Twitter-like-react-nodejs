@@ -1,3 +1,5 @@
+import type { MediaType } from "./MediaType";
+
 export type PostType = {
     id: number;
     content: string;
@@ -12,4 +14,5 @@ export type PostType = {
         lastname: string;
         username: string;
     };
+    medias: MediaType[];
 };

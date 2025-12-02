@@ -32,7 +32,7 @@ export default function PostStatsComponents({ post }: { post: PostType }) {
         }
     }
 
-    console.log(errors);
+
     
     const handleAddLike = async () => {
         try {

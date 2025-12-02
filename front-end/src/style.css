@@ -132,3 +132,7 @@ main {
 .go-back-button:hover {
     background-color: rgba(128, 128, 128, 0.2);
 }
+
+li{
+    list-style: none;
+}

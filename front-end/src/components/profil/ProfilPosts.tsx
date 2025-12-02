@@ -33,8 +33,6 @@ export default function ProfilPost({
 
             >
                 {posts.map((post) => {
-                    console.log(post);
-
                     return <PostCommentComponent key={post.id} post={post} />
                 })}
             </InfiniteScroll>
