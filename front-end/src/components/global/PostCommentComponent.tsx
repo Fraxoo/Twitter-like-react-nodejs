@@ -2,7 +2,6 @@ import { Link } from "react-router";
 import PostStatsComponents from "./PostStatsComponents";
 import type { PostType } from "../../types/PostType";
 import ImageDisplay from "./ImageDisplayComponent";
-import type { MediaType } from "../../types/MediaType";
 
 
 export default function PostCommentComponent({ post }: { post: PostType }) {

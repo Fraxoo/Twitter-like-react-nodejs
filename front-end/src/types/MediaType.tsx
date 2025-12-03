@@ -1,6 +1,6 @@
 export type MediaType = {
     id: number;
-    filename: string;
+    url: string;
     type: string;
 };
 
