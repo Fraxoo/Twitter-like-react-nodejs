@@ -34,7 +34,7 @@ export async function getPostWithReplies(req, res) {
 
         if (offset === 0) {
             postData = await Post.findByPk(id, {
-                include: [{ model: User }],
+                include: [{ model: User }, { model: Media }],
                 attributes: {
                     include: [
                         [
@@ -70,7 +70,7 @@ export async function getPostWithReplies(req, res) {
 
         const repliesData = await Post.findAll({
             where: { parent_id: id },
-            include: [{ model: User }],
+            include: [{ model: User }, { model: Media }],
             offset,
             limit: 10,
             order: [["createdAt", "DESC"]],
@@ -112,7 +112,13 @@ export async function getPostWithReplies(req, res) {
                 name: reply.User.name,
                 lastname: reply.User.lastname,
                 username: reply.User.username
-            }
+            },
+            medias: reply.Media.map(m => ({
+                id: m.id,
+                url: `http://localhost:8000/uploads/${m.filename}`,
+                type: m.type
+            }))
+
         }));
 
 
@@ -133,7 +139,12 @@ export async function getPostWithReplies(req, res) {
                             name: postData.User.name,
                             lastname: postData.User.lastname,
                             username: postData.User.username
-                        }
+                        },
+                        medias: postData.Media.map(m => ({
+                            id: m.id,
+                            url: `http://localhost:8000/uploads/${m.filename}`,
+                            type: m.type
+                        }))
                     }
                     : null,
             replies,
@@ -202,7 +213,7 @@ export async function getAllPostWithLimit(req, res) {
             },
             medias: postData.Media.map(m => ({
                 id: m.id,
-                filename: m.filename,
+                url: `http://localhost:8000/uploads/${m.filename}`,
                 type: m.type
             }))
         }));

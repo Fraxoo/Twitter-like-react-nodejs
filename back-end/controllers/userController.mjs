@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { User,Like,Post } from "../models/index.mjs";
+import { User, Like, Post } from "../models/index.mjs";
 import dotenv from "dotenv";
 import { sequelize } from "../config/database.mjs";
 import { Op } from "sequelize";
+import { Media } from "../models/index.mjs";
 
 
 dotenv.config();
@@ -51,7 +52,7 @@ export async function getAllPostWithLimitByUser(req, res) {
 
         const postsData = await Post.findAll({
             where: { parent_id: null, user_id: profileUserId },
-            include: [{ model: User }],
+            include: [{ model: User },{model: Media}],
             offset,
             limit: 10,
             order: [["updatedAt", "DESC"]],
@@ -94,7 +95,12 @@ export async function getAllPostWithLimitByUser(req, res) {
                 name: postData.User.name,
                 lastname: postData.User.lastname,
                 username: postData.User.username
-            }
+            },
+            medias: postData.Media.map(m => ({
+                id: m.id,
+                url: `http://localhost:8000/uploads/${m.filename}`,
+                type: m.type
+            }))
         }));
 
         return res.status(200).json({
@@ -135,7 +141,7 @@ export async function getAllResponseByUser(req, res) {
             where: {
                 parent_id: { [Op.ne]: null }, /// en gros where parent id n'est pas null voir la doc sequelize //oublie pas l'import 
                 user_id: profileUserId
-            }, include: [{ model: User }],
+            }, include: [{ model: User }, { model: Media }],
             offset,
             limit: 10,
             order: [["updatedAt", "DESC"]],
@@ -178,7 +184,12 @@ export async function getAllResponseByUser(req, res) {
                 name: postData.User.name,
                 lastname: postData.User.lastname,
                 username: postData.User.username
-            }
+            },
+            medias: postData.Media.map(m => ({
+                id: m.id,
+                url: `http://localhost:8000/uploads/${m.filename}`,
+                type: m.type
+            }))
         }));
 
         return res.status(200).json({
@@ -216,7 +227,7 @@ export async function getAllPostWithImageByUser(req, res) {
 
         const postsData = await Post.findAll({
             where: { parent_id: null, user_id: profileUserId },
-            include: [{ model: User }],
+            include: [{ model: User }, { model: Media }],
             offset,
             limit: 10,
             order: [["updatedAt", "DESC"]],
@@ -259,7 +270,12 @@ export async function getAllPostWithImageByUser(req, res) {
                 name: postData.User.name,
                 lastname: postData.User.lastname,
                 username: postData.User.username
-            }
+            },
+            medias: postData.Media.map(m => ({
+                id: m.id,
+                url: `http://localhost:8000/uploads/${m.filename}`,
+                type: m.type
+            }))
         }));
 
         return res.status(200).json({
@@ -303,7 +319,7 @@ export async function getAllPostLikedByUser(req, res) {
                     where: { user_id: profileUserId },
                     attributes: []
                 },
-                { model: User }
+                { model: User }, { model: Media }
             ],
             offset,
             limit: 10,
@@ -347,7 +363,12 @@ export async function getAllPostLikedByUser(req, res) {
                 name: postData.User.name,
                 lastname: postData.User.lastname,
                 username: postData.User.username
-            }
+            },
+            medias: postData.Media.map(m => ({
+                id: m.id,
+                url: `http://localhost:8000/uploads/${m.filename}`,
+                type: m.type
+            }))
         }));
 
         return res.status(200).json({

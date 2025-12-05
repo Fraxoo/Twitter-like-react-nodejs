@@ -22,7 +22,7 @@ app.use(cors({
     credentials: true
 }));
 
-
+app.use("/uploads", express.static("uploads"));
 app.use("/users", userRoutes);
 app.use("/post", postRoutes)
 app.use("/like", likeRoutes)
