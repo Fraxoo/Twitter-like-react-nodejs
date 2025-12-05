@@ -16,13 +16,13 @@ export default function PostCommentComponent({ post }: { post: PostType }) {
                             {post && <p className="post-card-content-user-greyed">@{post.user.username}</p>}
                         </Link>
                     </div>
-                    <div>
+                    <div className="post-card-content-show">
                         <div>
                             <Link to={`/post/${post.id}`}>
                                 {post && <p>{post.content}</p>}
                             </Link>
                         </div>
-                        {post.medias.length > 0 && <ImageDisplay medias={post.medias}/>}
+                        {post.medias && <ImageDisplay medias={post.medias}/>}
                     </div>
                 </div>
                 <div className="post-card-function">

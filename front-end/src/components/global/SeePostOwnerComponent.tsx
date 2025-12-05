@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PostStatsComponents from "./PostStatsComponents";
 import type { PostType } from "../../types/PostType";
+import ImageDisplay from "./ImageDisplayComponent";
 
 
 export default function SeePostOwnerComponent({ post }: { post: PostType }) {
@@ -48,6 +49,8 @@ export default function SeePostOwnerComponent({ post }: { post: PostType }) {
 
             <div className="see-post-owner-card-content">
                 <p>{post.content}</p>
+                {post.medias && <ImageDisplay medias={post.medias} />}
+
             </div>
 
             <div className="see-post-owner-card-modify">
